@@ -1,6 +1,7 @@
 package com.trendyol.medusa
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,36 @@ class SampleFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sample, container, false)!!
         view.findViewById<TextView>(R.id.textview).text = arguments!!.getString(KEY)
-        view.findViewById<Button>(R.id.button).setOnClickListener { navigator.start(FragmentGenerator.generateNewFragment()) }
+        view.findViewById<Button>(R.id.button).setOnClickListener {
+            multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment(multipleStackNavigator!!.getTotalFragmentCount().toString()))
 
+        }
         return view
     }
 
-    public fun getFragmentTag(): String {
-        return arguments!!.getString(KEY)
+    override fun onStart() {
+        super.onStart()
+        Log.v("TEST","START ${arguments!!.getString(KEY)}")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.v("TEST","STOP ${arguments!!.getString(KEY)}")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.v("TEST","DESTROY ${arguments!!.getString(KEY)}")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.v("TEST","CREATE ${arguments!!.getString(KEY)}")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.v("TEST","RESUME ${arguments!!.getString(KEY)}")
     }
 
     companion object {
