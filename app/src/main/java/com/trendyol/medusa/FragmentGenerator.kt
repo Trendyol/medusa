@@ -5,8 +5,8 @@ class FragmentGenerator {
 
     companion object {
 
-        fun generateNewFragment(name: String): SampleFragment {
-            return SampleFragment.newInstance("fragment $name")
+        fun generateNewFragment(): SampleFragment {
+            return SampleFragment.newInstance("fragment " + Math.random() * 50)
         }
     }
 }

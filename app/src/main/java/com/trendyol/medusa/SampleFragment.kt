@@ -14,10 +14,15 @@ class SampleFragment : BaseFragment() {
         val view = inflater.inflate(R.layout.fragment_sample, container, false)!!
         view.findViewById<TextView>(R.id.textview).text = arguments!!.getString(KEY)
         view.findViewById<Button>(R.id.button).setOnClickListener {
-            multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment(multipleStackNavigator!!.getTotalFragmentCount().toString()))
+            multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment())
 
         }
         return view
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.v("TEST","RESUME ${arguments!!.getString(KEY)}")
     }
 
     override fun onStart() {
@@ -43,6 +48,11 @@ class SampleFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         Log.v("TEST","RESUME ${arguments!!.getString(KEY)}")
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        Log.v("TEST", "ONHIDDENCHANGED ${arguments!!.getString(KEY)}")
     }
 
     companion object {

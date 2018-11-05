@@ -1,4 +1,4 @@
-package com.trendyol.medusalib.extensions
+package com.trendyol.medusalib.common.extensions
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager

@@ -18,9 +18,9 @@ class MainActivity : AppCompatActivity() {
 
     var multipleStackNavigator: MultipleStackNavigator? = null
 
-    private val firstTabFragment = FragmentGenerator.generateNewFragment("Root A")
-    private val secondTabFragment = FragmentGenerator.generateNewFragment("Root B")
-    private val thirdTabFragment = FragmentGenerator.generateNewFragment("Root C")
+    private val firstTabFragment = FragmentGenerator.generateNewFragment()
+    private val secondTabFragment = FragmentGenerator.generateNewFragment()
+    private val thirdTabFragment = FragmentGenerator.generateNewFragment()
 
     private val rootFragmentList: MutableList<Fragment> = ArrayList()
 

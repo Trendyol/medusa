@@ -3,7 +3,7 @@ package com.trendyol.medusalib.navigator
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
-import com.trendyol.medusalib.extensions.*
+import com.trendyol.medusalib.common.extensions.*
 import java.lang.IllegalStateException
 import java.util.*
 
@@ -140,9 +140,5 @@ class MultipleStackNavigator(private val supportFragmentManager: FragmentManager
         }
         fragmentTransaction.commit()
         supportFragmentManager.executePendingTransactions()
-    }
-
-    fun getTotalFragmentCount(): Int {
-        return totalFragmentCount
     }
 }

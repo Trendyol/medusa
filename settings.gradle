@@ -1,1 +1,1 @@
-include ':app', ':medusalib'
+include ':app', ':medusalib', ':common'
