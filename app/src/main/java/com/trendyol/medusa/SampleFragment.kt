@@ -7,8 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import com.trendyol.medusalib.navigator.NavigationItem
 
-class SampleFragment : BaseFragment() {
+class SampleFragment : BaseFragment(), NavigationItem{
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sample, container, false)!!
@@ -18,6 +19,10 @@ class SampleFragment : BaseFragment() {
 
         }
         return view
+    }
+
+    override fun getItemTag(): String {
+        return "TEST"
     }
 
     override fun onPause() {

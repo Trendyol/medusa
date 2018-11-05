@@ -7,31 +7,30 @@ import com.trendyol.medusalib.common.extensions.*
 import java.lang.IllegalStateException
 import java.util.*
 
-class MultipleStackNavigator(private val supportFragmentManager: FragmentManager,
+class MultipleStackNavigator(private val fragmentManager: FragmentManager,
                              private val containerId: Int,
                              private val rootFragments: List<Fragment>,
                              private val defaultTabIndex: Int = 0,
                              private val navigatorListener: NavigatorListener? = null) : Navigator {
 
+    private val tagCreator: TagCreator = UniqueTagCreator()
+
     private val fragmentTagStack: MutableList<Stack<String>> = ArrayList()
 
     private val currentTabIndexStack: Stack<Int> = Stack()
-
-    private var totalFragmentCount = 0
-
-    private var currentFragment: Fragment? = null
 
     init {
         initializeStackWithRootFragments()
     }
 
     override fun start(fragment: Fragment) {
-        currentFragment?.let { supportFragmentManager.commitHide(it) }
-        val createdTag = createTag(fragment)
+        val createdTag = tagCreator.create(fragment)
         val currentTabIndex = currentTabIndexStack.peek()
-        supportFragmentManager.commitAdd(containerId, fragment, createdTag)
+        fragmentManager.inTransaction {
+            detach(getCurrentFragment())
+            add(containerId, fragment, createdTag)
+        }
         fragmentTagStack[currentTabIndex].push(createdTag)
-        currentFragment = fragment
     }
 
     override fun goBack() {
@@ -42,16 +41,15 @@ class MultipleStackNavigator(private val supportFragmentManager: FragmentManager
         val currentTabIndex = currentTabIndexStack.peek()
 
         if (fragmentTagStack[currentTabIndex].size == 1) {
+            fragmentManager.commitDetach(getCurrentFragment())
             currentTabIndexStack.pop()
-            currentFragment?.let { supportFragmentManager.commitHide(it) }
             navigatorListener?.let { it.onTabChanged(currentTabIndexStack.peek()) }
         } else {
-            currentFragment?.let { supportFragmentManager.commitRemove(fragmentTagStack[currentTabIndex].pop()) }
+            val currentFragmentTag = fragmentTagStack[currentTabIndex].pop()
+            fragmentManager.commitRemove(currentFragmentTag)
         }
 
-        currentFragment = findUpperFragmentByIndex(currentTabIndexStack.peek())
         showUpperFragmentByIndex(currentTabIndexStack.peek())
-        totalFragmentCount--
     }
 
     override fun canGoBack(): Boolean {
@@ -64,16 +62,15 @@ class MultipleStackNavigator(private val supportFragmentManager: FragmentManager
     override fun switchTab(tabIndex: Int) {
         if (tabIndex == currentTabIndexStack.peek()) return
 
-        currentFragment?.let { supportFragmentManager.commitHide(it) }
+        fragmentManager.commitDetach(getCurrentFragment())
 
         if (currentTabIndexStack.contains(tabIndex).not()) {
-            currentFragment = getRootFragment(tabIndex)
+            val rootFragmentTag = fragmentTagStack[tabIndex].peek()
             currentTabIndexStack.push(tabIndex)
-            commitRootFragment(tabIndex)
+            fragmentManager.commitAdd(containerId, getRootFragment(tabIndex), rootFragmentTag)
         } else {
-            currentFragment = findUpperFragmentByIndex(tabIndex)
             currentTabIndexStack.moveToTop(tabIndex)
-            supportFragmentManager.commitShow(fragmentTagStack[tabIndex].peek())
+            fragmentManager.commitAttach(fragmentTagStack[tabIndex].peek())
         }
     }
 
@@ -82,8 +79,6 @@ class MultipleStackNavigator(private val supportFragmentManager: FragmentManager
     }
 
     override fun reset() {
-        currentFragment?.let { supportFragmentManager.commitHide(it) }
-        totalFragmentCount = 0
         clearAllFragments()
         currentTabIndexStack.clear()
         fragmentTagStack.clear()
@@ -94,51 +89,42 @@ class MultipleStackNavigator(private val supportFragmentManager: FragmentManager
     private fun initializeStackWithRootFragments() {
         for (i in 0 until rootFragments.size) {
             val stack: Stack<String> = Stack()
-            val createdTag = createTag(rootFragments[i])
+            val createdTag = tagCreator.create(rootFragments[i])
             stack.push(createdTag)
             fragmentTagStack.add(stack)
         }
 
-
-        currentFragment = getRootFragment(defaultTabIndex)
+        val rootFragmentTag = fragmentTagStack[defaultTabIndex].peek()
         currentTabIndexStack.push(defaultTabIndex)
-        commitRootFragment(defaultTabIndex)
-    }
-
-    private fun commitRootFragment(tabIndex: Int) {
-        val rootFragment = getRootFragment(tabIndex)
-        val rootFragmentTag = fragmentTagStack[tabIndex].peek()
-        supportFragmentManager.commitAdd(containerId, rootFragment, rootFragmentTag)
+        fragmentManager.commitAdd(containerId, getRootFragment(defaultTabIndex), rootFragmentTag)
     }
 
     private fun getRootFragment(tabIndex: Int): Fragment = rootFragments[tabIndex]
 
-    private fun findUpperFragmentByIndex(tabIndex: Int): Fragment? {
-        val fragmentTag = fragmentTagStack[tabIndex].peek()
-        return findFragment(fragmentTag)
-    }
-
-    private fun findFragment(fragmentTag: String): Fragment? {
-        return supportFragmentManager.findFragmentByTag(fragmentTag)
-    }
-
     private fun showUpperFragmentByIndex(tabIndex: Int) {
         val upperFragmentTag = fragmentTagStack[tabIndex].peek()
-        supportFragmentManager.commitShow(upperFragmentTag)
+        fragmentManager.commitAttach(upperFragmentTag)
     }
 
-    private fun createTag(fragment: Fragment): String {
-        return fragment.javaClass.name + ++totalFragmentCount
+    private fun getCurrentFragment(): Fragment {
+        val currentTabIndex = currentTabIndexStack.peek()
+        val currentFragmentTag = fragmentTagStack[currentTabIndex].peek()
+        return fragmentManager.findFragmentByTag(currentFragmentTag)
     }
 
     private fun clearAllFragments() {
-        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         for (tagStack in fragmentTagStack) {
             while (tagStack.isEmpty().not()) {
-                findFragment(tagStack.pop())?.let { fragmentTransaction.remove(it) }
+                val currentFragment = fragmentManager.findFragmentByTag(tagStack.pop())
+                currentFragment?.let { fragmentTransaction.remove(it) }
             }
         }
         fragmentTransaction.commit()
-        supportFragmentManager.executePendingTransactions()
+        fragmentManager.executePendingTransactions()
+    }
+
+    companion object {
+        private const val TAG_DIVIDER = "-_-"
     }
 }

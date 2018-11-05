@@ -8,3 +8,5 @@ fun <T> Stack<T>.moveToTop(data: T) {
         push(data)
     }
 }
+
+fun <T> List<Stack<T>>.has(data: T): Boolean = any { it.contains(data) }

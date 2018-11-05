@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         rootFragmentList.add(secondTabFragment)
         rootFragmentList.add(thirdTabFragment)
 
+
         multipleStackNavigator = MultipleStackNavigator(
                 supportFragmentManager,
                 R.id.fragmentContainer,

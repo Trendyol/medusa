@@ -45,7 +45,7 @@ interface Navigator {
      * switch to the that tab by using tabIndex. False, If you don't want to switch tab
      * and only reset the tab.
      */
-    fun reset(tabIndex: Int, switchToResetTab: Boolean)
+    fun reset(tabIndex: Int, switchToResetTab: Boolean = false)
 
     /**
      * Resets all tabs and Navigator history.
