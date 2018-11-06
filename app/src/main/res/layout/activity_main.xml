@@ -33,9 +33,18 @@
                 android:text="Reset" />
 
             <Button
-                android:id="@+id/resetTab"
+                android:id="@+id/resetCurrentTab"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Reset Current Tab"
+                android:singleLine="true"/>
+
+            <Button
+                android:id="@+id/resetXTab"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:layout_weight="1"
                 android:text="Reset X Tab" />
 

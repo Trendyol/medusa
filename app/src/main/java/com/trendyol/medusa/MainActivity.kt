@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                 })
 
         mTextMessage = findViewById<View>(R.id.message) as TextView?
+        (findViewById<Button>(R.id.resetCurrentTab) as Button).setOnClickListener { multipleStackNavigator!!.resetCurrentTab(true) }
         navigation = findViewById<View>(R.id.navigation) as BottomNavigationView
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         findViewById<Button>(R.id.reset).setOnClickListener { multipleStackNavigator!!.reset() }

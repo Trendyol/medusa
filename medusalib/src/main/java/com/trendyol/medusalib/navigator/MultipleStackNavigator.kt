@@ -74,8 +74,13 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         }
     }
 
-    override fun reset(tabIndex: Int, switchToResetTab: Boolean) {
+    override fun reset(tabIndex: Int, restartRootFragment: Boolean) {
+        resetTab(tabIndex, restartRootFragment)
+    }
 
+    override fun resetCurrentTab(restartRootFragment: Boolean) {
+        val currentTabIndex = currentTabIndexStack.peek()
+        resetTab(currentTabIndex, restartRootFragment)
     }
 
     override fun reset() {
@@ -84,6 +89,31 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         fragmentTagStack.clear()
         initializeStackWithRootFragments()
         navigatorListener?.let { it.onTabChanged(defaultTabIndex) }
+    }
+
+    private fun resetTab(tabIndex: Int, restartRootFragment: Boolean) {
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        while (fragmentTagStack[tabIndex].empty().not()) {
+            if (fragmentTagStack[tabIndex].size == 1 && restartRootFragment.not()) {
+                break
+            }
+
+            val fragmentTagToBeRemoved = fragmentTagStack[tabIndex].pop()
+            val fragmentToBeRemoved = fragmentManager.findFragmentByTag(fragmentTagToBeRemoved)
+            fragmentTransaction.remove(fragmentToBeRemoved)
+        }
+
+        fragmentTransaction.commitAllowingStateLoss()
+        fragmentManager.executePendingTransactions()
+
+        if (restartRootFragment) {
+            val rootFragment = getRootFragment(tabIndex)
+            val createdTag = tagCreator.create(rootFragment)
+            fragmentTagStack[tabIndex].push(createdTag)
+            fragmentManager.commitAdd(containerId, rootFragment, createdTag)
+        } else {
+            showUpperFragmentByIndex(tabIndex)
+        }
     }
 
     private fun initializeStackWithRootFragments() {
@@ -95,8 +125,9 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         }
 
         val rootFragmentTag = fragmentTagStack[defaultTabIndex].peek()
+        val rootFragment = getRootFragment(defaultTabIndex)
         currentTabIndexStack.push(defaultTabIndex)
-        fragmentManager.commitAdd(containerId, getRootFragment(defaultTabIndex), rootFragmentTag)
+        fragmentManager.commitAdd(containerId, rootFragment, rootFragmentTag)
     }
 
     private fun getRootFragment(tabIndex: Int): Fragment = rootFragments[tabIndex]
@@ -122,9 +153,5 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         }
         fragmentTransaction.commit()
         fragmentManager.executePendingTransactions()
-    }
-
-    companion object {
-        private const val TAG_DIVIDER = "-_-"
     }
 }
