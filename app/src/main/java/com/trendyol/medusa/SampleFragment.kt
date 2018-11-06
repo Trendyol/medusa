@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import com.trendyol.medusalib.navigator.NavigationItem
 
 class SampleFragment : BaseFragment(){
 
@@ -19,6 +18,11 @@ class SampleFragment : BaseFragment(){
 
         }
         return view
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.v("TEST","CREATE ${arguments!!.getString(KEY)}")
     }
 
     override fun onStop() {
