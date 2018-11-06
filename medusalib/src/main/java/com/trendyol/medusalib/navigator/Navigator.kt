@@ -41,18 +41,18 @@ interface Navigator {
      * Resets the tabIndex history. Detaches and destroy all
      * fragments which are started in passed tabIndex.
      * @param tabIndex reset tabIndex
-     * @param restartRootFragment restarts root fragment, If false
+     * @param resetRootFragment resets root fragment, If false
      * use existing root fragment instance and state
      */
-    fun reset(tabIndex: Int, restartRootFragment: Boolean = false)
+    fun reset(tabIndex: Int, resetRootFragment: Boolean = false)
 
     /**
      * Resets current tabs and its history.
      * Turn back to root fragment
-     * @param restartRootFragment restarts root fragment, If false
+     * @param resetRootFragment resets root fragment, If false
      * use existing root fragment instance and state
      */
-    fun resetCurrentTab(restartRootFragment: Boolean = false)
+    fun resetCurrentTab(resetRootFragment: Boolean = false)
 
     /**
      * Resets all tabs and Navigator history.

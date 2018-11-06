@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.trendyol.medusalib.navigator.NavigationItem
 
-class SampleFragment : BaseFragment(), NavigationItem{
+class SampleFragment : BaseFragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sample, container, false)!!
@@ -19,20 +19,6 @@ class SampleFragment : BaseFragment(), NavigationItem{
 
         }
         return view
-    }
-
-    override fun getItemTag(): String {
-        return "TEST"
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.v("TEST","RESUME ${arguments!!.getString(KEY)}")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.v("TEST","START ${arguments!!.getString(KEY)}")
     }
 
     override fun onStop() {
@@ -45,19 +31,9 @@ class SampleFragment : BaseFragment(), NavigationItem{
         Log.v("TEST","DESTROY ${arguments!!.getString(KEY)}")
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.v("TEST","CREATE ${arguments!!.getString(KEY)}")
-    }
-
     override fun onResume() {
         super.onResume()
         Log.v("TEST","RESUME ${arguments!!.getString(KEY)}")
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        Log.v("TEST", "ONHIDDENCHANGED ${arguments!!.getString(KEY)}")
     }
 
     companion object {

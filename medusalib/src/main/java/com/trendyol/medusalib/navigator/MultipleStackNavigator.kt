@@ -65,22 +65,49 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         fragmentManager.commitDetach(getCurrentFragment())
 
         if (currentTabIndexStack.contains(tabIndex).not()) {
-            val rootFragmentTag = fragmentTagStack[tabIndex].peek()
             currentTabIndexStack.push(tabIndex)
-            fragmentManager.commitAdd(containerId, getRootFragment(tabIndex), rootFragmentTag)
         } else {
             currentTabIndexStack.moveToTop(tabIndex)
-            fragmentManager.commitAttach(fragmentTagStack[tabIndex].peek())
+        }
+
+        val upperFragmentTag = fragmentTagStack[tabIndex].peek()
+
+        if (fragmentManager.findFragmentByTag(upperFragmentTag) == null) {
+            val rootFragment = getRootFragment(tabIndex)
+            fragmentManager.commitAdd(containerId, rootFragment, upperFragmentTag)
+        } else {
+            fragmentManager.commitAttach(upperFragmentTag)
         }
     }
 
-    override fun reset(tabIndex: Int, restartRootFragment: Boolean) {
-        resetTab(tabIndex, restartRootFragment)
+    override fun reset(tabIndex: Int, resetRootFragment: Boolean) {
+        val currentTabIndex = currentTabIndexStack.peek()
+        if (tabIndex == currentTabIndex) {
+            resetCurrentTab(resetRootFragment)
+            return
+        }
+
+        clearAllFragments(tabIndex, resetRootFragment)
+
+        if (resetRootFragment) {
+            val rootFragment = getRootFragment(tabIndex)
+            val createdTag = tagCreator.create(rootFragment)
+            fragmentTagStack[tabIndex].push(createdTag)
+        }
     }
 
-    override fun resetCurrentTab(restartRootFragment: Boolean) {
+    override fun resetCurrentTab(resetRootFragment: Boolean) {
         val currentTabIndex = currentTabIndexStack.peek()
-        resetTab(currentTabIndex, restartRootFragment)
+        clearAllFragments(currentTabIndex, resetRootFragment)
+
+        if (resetRootFragment) {
+            val rootFragment = getRootFragment(currentTabIndex)
+            val createdTag = tagCreator.create(rootFragment)
+            fragmentTagStack[currentTabIndex].push(createdTag)
+            fragmentManager.commitAdd(containerId, rootFragment, createdTag)
+        } else {
+            showUpperFragmentByIndex(currentTabIndex)
+        }
     }
 
     override fun reset() {
@@ -89,31 +116,6 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         fragmentTagStack.clear()
         initializeStackWithRootFragments()
         navigatorListener?.let { it.onTabChanged(defaultTabIndex) }
-    }
-
-    private fun resetTab(tabIndex: Int, restartRootFragment: Boolean) {
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        while (fragmentTagStack[tabIndex].empty().not()) {
-            if (fragmentTagStack[tabIndex].size == 1 && restartRootFragment.not()) {
-                break
-            }
-
-            val fragmentTagToBeRemoved = fragmentTagStack[tabIndex].pop()
-            val fragmentToBeRemoved = fragmentManager.findFragmentByTag(fragmentTagToBeRemoved)
-            fragmentTransaction.remove(fragmentToBeRemoved)
-        }
-
-        fragmentTransaction.commitAllowingStateLoss()
-        fragmentManager.executePendingTransactions()
-
-        if (restartRootFragment) {
-            val rootFragment = getRootFragment(tabIndex)
-            val createdTag = tagCreator.create(rootFragment)
-            fragmentTagStack[tabIndex].push(createdTag)
-            fragmentManager.commitAdd(containerId, rootFragment, createdTag)
-        } else {
-            showUpperFragmentByIndex(tabIndex)
-        }
     }
 
     private fun initializeStackWithRootFragments() {
@@ -152,6 +154,27 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             }
         }
         fragmentTransaction.commit()
+        fragmentManager.executePendingTransactions()
+    }
+
+    private fun clearAllFragments(tabIndex: Int, resetRootFragment: Boolean) {
+        if (fragmentTagStack[tabIndex].empty()) {
+            return
+        }
+
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+        while (fragmentTagStack[tabIndex].empty().not()) {
+            if (fragmentTagStack[tabIndex].size == 1 && resetRootFragment.not()) {
+                break
+            }
+
+            val fragmentTagToBeRemoved = fragmentTagStack[tabIndex].pop()
+            val fragmentToBeRemoved = fragmentManager.findFragmentByTag(fragmentTagToBeRemoved)
+            fragmentToBeRemoved?.let { fragmentTransaction.remove(fragmentToBeRemoved) }
+        }
+
+        fragmentTransaction.commitAllowingStateLoss()
         fragmentManager.executePendingTransactions()
     }
 }

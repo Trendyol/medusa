@@ -17,36 +17,65 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_alignParentBottom="true"
-            android:layout_below="@+id/linearLayout"/>
+            android:layout_below="@+id/linearLayout" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/reset"
-                android:layout_width="0dp"
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Reset" />
+                android:layout_margin="16dp">
 
-            <Button
-                android:id="@+id/resetCurrentTab"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Reset Current Tab"
-                android:singleLine="true"/>
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="Destroy/Restart root fragment on Reset" />
 
-            <Button
-                android:id="@+id/resetXTab"
-                android:layout_width="0dp"
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/restartSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:checked="true" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:layout_weight="1"
-                android:text="Reset X Tab" />
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/reset"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Reset" />
+
+                <Button
+                    android:id="@+id/resetCurrentTab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="Reset Current Tab" />
+
+                <Button
+                    android:id="@+id/resetXTab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="Reset X Tab" />
+
+            </LinearLayout>
 
         </LinearLayout>
     </RelativeLayout>

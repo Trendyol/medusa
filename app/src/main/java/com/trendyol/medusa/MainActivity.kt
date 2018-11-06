@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 rootFragmentList,
                 navigatorListener = object : NavigatorListener {
                     override fun onTabChanged(tabIndex: Int) {
-                        when(tabIndex){
+                        when (tabIndex) {
                             0 -> navigation.selectedItemId = R.id.navigation_home
                             1 -> navigation.selectedItemId = R.id.navigation_dashboard
                             2 -> navigation.selectedItemId = R.id.navigation_notifications
@@ -67,16 +68,18 @@ class MainActivity : AppCompatActivity() {
                 })
 
         mTextMessage = findViewById<View>(R.id.message) as TextView?
-        (findViewById<Button>(R.id.resetCurrentTab) as Button).setOnClickListener { multipleStackNavigator!!.resetCurrentTab(true) }
+        val restartRootFragmentCheckBox = findViewById<View>(R.id.restartSwitch) as SwitchCompat
+        (findViewById<Button>(R.id.resetCurrentTab) as Button).setOnClickListener { multipleStackNavigator!!.resetCurrentTab(restartRootFragmentCheckBox.isChecked) }
+        (findViewById<Button>(R.id.resetXTab) as Button).setOnClickListener { multipleStackNavigator!!.reset(1, restartRootFragmentCheckBox.isChecked) }
         navigation = findViewById<View>(R.id.navigation) as BottomNavigationView
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         findViewById<Button>(R.id.reset).setOnClickListener { multipleStackNavigator!!.reset() }
     }
 
     override fun onBackPressed() {
-        if(multipleStackNavigator!!.canGoBack()){
+        if (multipleStackNavigator!!.canGoBack()) {
             multipleStackNavigator!!.goBack()
-        }else{
+        } else {
             super.onBackPressed()
         }
     }
