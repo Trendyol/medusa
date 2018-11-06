@@ -9,4 +9,6 @@ fun <T> Stack<T>.moveToTop(data: T) {
     }
 }
 
-fun <T> List<Stack<T>>.has(data: T): Boolean = any { it.contains(data) }
+fun <T> Stack<T>.insertToBottom(data: T) {
+    insertElementAt(data, 0)
+}

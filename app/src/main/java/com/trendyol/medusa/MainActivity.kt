@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.trendyol.medusalib.navigator.MultipleStackNavigator
+import com.trendyol.medusalib.navigator.NavigatorConfiguration
 import com.trendyol.medusalib.navigator.NavigatorListener
 
 class MainActivity : AppCompatActivity() {
@@ -48,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        navigation = findViewById<View>(R.id.navigation) as BottomNavigationView
+
         rootFragmentList.add(firstTabFragment)
         rootFragmentList.add(secondTabFragment)
         rootFragmentList.add(thirdTabFragment)
@@ -65,13 +68,14 @@ class MainActivity : AppCompatActivity() {
                             2 -> navigation.selectedItemId = R.id.navigation_notifications
                         }
                     }
-                })
+                },
+                navigatorConfiguration = NavigatorConfiguration(1, true))
 
         mTextMessage = findViewById<View>(R.id.message) as TextView?
         val restartRootFragmentCheckBox = findViewById<View>(R.id.restartSwitch) as SwitchCompat
         (findViewById<Button>(R.id.resetCurrentTab) as Button).setOnClickListener { multipleStackNavigator!!.resetCurrentTab(restartRootFragmentCheckBox.isChecked) }
         (findViewById<Button>(R.id.resetXTab) as Button).setOnClickListener { multipleStackNavigator!!.reset(1, restartRootFragmentCheckBox.isChecked) }
-        navigation = findViewById<View>(R.id.navigation) as BottomNavigationView
+
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         findViewById<Button>(R.id.reset).setOnClickListener { multipleStackNavigator!!.reset() }
     }

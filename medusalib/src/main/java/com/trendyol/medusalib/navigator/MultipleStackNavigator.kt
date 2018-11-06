@@ -10,8 +10,8 @@ import java.util.*
 class MultipleStackNavigator(private val fragmentManager: FragmentManager,
                              private val containerId: Int,
                              private val rootFragments: List<Fragment>,
-                             private val defaultTabIndex: Int = 0,
-                             private val navigatorListener: NavigatorListener? = null) : Navigator {
+                             private val navigatorListener: NavigatorListener? = null,
+                             private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration()) : Navigator {
 
     private val tagCreator: TagCreator = UniqueTagCreator()
 
@@ -38,6 +38,10 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             throw IllegalStateException("Can not call goBack() method because stack is empty.")
         }
 
+        if (shouldExit() && shouldGoBackToInitialIndex()) {
+            currentTabIndexStack.insertToBottom(navigatorConfiguration.initialTabIndex)
+        }
+
         val currentTabIndex = currentTabIndexStack.peek()
 
         if (fragmentTagStack[currentTabIndex].size == 1) {
@@ -53,7 +57,7 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
     }
 
     override fun canGoBack(): Boolean {
-        if (currentTabIndexStack.size == 1 && fragmentTagStack[currentTabIndexStack.peek()].size == 1) {
+        if (shouldExit() && shouldGoBackToInitialIndex().not()) {
             return false
         }
         return true
@@ -115,7 +119,6 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         currentTabIndexStack.clear()
         fragmentTagStack.clear()
         initializeStackWithRootFragments()
-        navigatorListener?.let { it.onTabChanged(defaultTabIndex) }
     }
 
     private fun initializeStackWithRootFragments() {
@@ -126,10 +129,12 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             fragmentTagStack.add(stack)
         }
 
-        val rootFragmentTag = fragmentTagStack[defaultTabIndex].peek()
-        val rootFragment = getRootFragment(defaultTabIndex)
-        currentTabIndexStack.push(defaultTabIndex)
+        val initialTabIndex = navigatorConfiguration.initialTabIndex
+        val rootFragmentTag = fragmentTagStack[initialTabIndex].peek()
+        val rootFragment = getRootFragment(initialTabIndex)
+        currentTabIndexStack.push(initialTabIndex)
         fragmentManager.commitAdd(containerId, rootFragment, rootFragmentTag)
+        navigatorListener?.let { it.onTabChanged(navigatorConfiguration.initialTabIndex) }
     }
 
     private fun getRootFragment(tabIndex: Int): Fragment = rootFragments[tabIndex]
@@ -143,6 +148,14 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         val currentTabIndex = currentTabIndexStack.peek()
         val currentFragmentTag = fragmentTagStack[currentTabIndex].peek()
         return fragmentManager.findFragmentByTag(currentFragmentTag)
+    }
+
+    private fun shouldExit(): Boolean {
+        return currentTabIndexStack.size == 1 && fragmentTagStack[currentTabIndexStack.peek()].size == 1
+    }
+
+    private fun shouldGoBackToInitialIndex(): Boolean {
+        return currentTabIndexStack.peek() != navigatorConfiguration.initialTabIndex && navigatorConfiguration.alwaysExitFromInitial
     }
 
     private fun clearAllFragments() {
