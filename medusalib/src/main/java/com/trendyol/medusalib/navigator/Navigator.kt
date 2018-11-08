@@ -61,4 +61,11 @@ interface Navigator {
      */
     fun reset()
 
+    /**
+     * Sets navigator listener.
+     * Interface is used to notify about navigation changes
+     * @param navigatorListener
+     */
+    fun setOnNavigatorListener(navigatorListener: NavigatorListener)
+
 }

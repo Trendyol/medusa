@@ -21,14 +21,6 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
     var onGoBackListener: OnGoBackListener? = null
 
     var navigatorListener: NavigatorListener? = null
-        set(value) {
-            field = value
-            with(currentTabIndexStack) {
-                if (isEmpty().not()) {
-                    field?.onTabChanged(peek())
-                }
-            }
-        }
 
     init {
         initializeStackWithRootFragments()
@@ -134,6 +126,15 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         currentTabIndexStack.clear()
         fragmentTagStack.clear()
         initializeStackWithRootFragments()
+    }
+
+    override fun setOnNavigatorListener(navigatorListener: NavigatorListener) {
+        this.navigatorListener = navigatorListener
+        with(currentTabIndexStack) {
+            if (isEmpty().not()) {
+                this@MultipleStackNavigator.navigatorListener?.onTabChanged(peek())
+            }
+        }
     }
 
     private fun initializeStackWithRootFragments() {
