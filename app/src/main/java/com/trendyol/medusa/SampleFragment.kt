@@ -10,8 +10,9 @@ import android.widget.TextView
 import com.trendyol.medusalib.navigator.OnGoBackListener
 
 class SampleFragment : BaseFragment(), OnGoBackListener{
+
     override fun onGoBack(): Boolean {
-        return false
+        return true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -19,7 +20,6 @@ class SampleFragment : BaseFragment(), OnGoBackListener{
         view.findViewById<TextView>(R.id.textview).text = arguments!!.getString(KEY)
         view.findViewById<Button>(R.id.button).setOnClickListener {
             multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment())
-
         }
 
         multipleStackNavigator!!.onGoBackListener = this
