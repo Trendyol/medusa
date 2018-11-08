@@ -1,2 +1,4 @@
 # medusa
-Android fragment stack controller
+Custom fragment stack controller with basic start/stop mechanism.
+
+
