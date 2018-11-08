@@ -10,8 +10,9 @@ import java.util.*
 class MultipleStackNavigator(private val fragmentManager: FragmentManager,
                              private val containerId: Int,
                              private val rootFragments: List<Fragment>,
-                             private val navigatorListener: NavigatorListener? = null,
-                             private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration()) : Navigator {
+                             var navigatorListener: NavigatorListener? = null,
+                             private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration(),
+                             var onGoBackListener: OnGoBackListener? = null) : Navigator {
 
     private val tagCreator: TagCreator = UniqueTagCreator()
 
@@ -36,6 +37,10 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
     override fun goBack() {
         if (canGoBack().not()) {
             throw IllegalStateException("Can not call goBack() method because stack is empty.")
+        }
+
+        if (onGoBackListener != null && onGoBackListener!!.onGoBack().not()) {
+            return
         }
 
         if (shouldExit() && shouldGoBackToInitialIndex()) {

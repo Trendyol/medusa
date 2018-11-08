@@ -7,8 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import com.trendyol.medusalib.navigator.OnGoBackListener
 
-class SampleFragment : BaseFragment(){
+class SampleFragment : BaseFragment(), OnGoBackListener{
+    override fun onGoBack(): Boolean {
+        return false
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sample, container, false)!!
@@ -17,6 +21,8 @@ class SampleFragment : BaseFragment(){
             multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment())
 
         }
+
+        multipleStackNavigator!!.onGoBackListener = this
         return view
     }
 
