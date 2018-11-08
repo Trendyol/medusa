@@ -128,15 +128,6 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         initializeStackWithRootFragments()
     }
 
-    override fun setOnNavigatorListener(navigatorListener: NavigatorListener) {
-        this.navigatorListener = navigatorListener
-        with(currentTabIndexStack) {
-            if (isEmpty().not()) {
-                this@MultipleStackNavigator.navigatorListener?.onTabChanged(peek())
-            }
-        }
-    }
-
     private fun initializeStackWithRootFragments() {
         for (i in 0 until rootFragments.size) {
             val stack: Stack<String> = Stack()
