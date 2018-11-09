@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 
+
 inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) =
         beginTransaction().func().commitAllowingStateLoss()
 
@@ -28,8 +29,25 @@ fun FragmentManager.commitAttach(fragmentTag: String) =
             }
         }
 
-fun FragmentManager.commitDetach(fragment: Fragment) =
-        inTransaction {
-            detach(fragment)
+fun FragmentManager.commitDetach(fragmentTag: String) =
+        findFragmentByTag(fragmentTag)?.let {
+            inTransaction {
+              detach(fragment)
+            }
         }
 
+fun FragmentManager.commitHide(fragmentTag: String) {
+    findFragmentByTag(fragmentTag)?.let {
+            inTransaction {
+              hide(fragment)
+            }
+    }
+}
+
+fun FragmentManager.commitShow(fragmentTag: String) {
+    findFragmentByTag(fragmentTag)?.let {
+        inTransaction {
+              show(fragment)
+        }
+    }
+}
