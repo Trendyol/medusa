@@ -60,5 +60,4 @@ interface Navigator {
      * Destroys all fragments and restart the initial one.
      */
     fun reset()
-
 }
