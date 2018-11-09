@@ -34,8 +34,29 @@ fun FragmentManager.commitAttach(fragmentTag: String) {
     }
 }
 
-fun FragmentManager.commitDetach(fragment: Fragment) {
-    beginTransaction()
-            .detach(fragment)
+fun FragmentManager.commitDetach(fragmentTag: String) {
+    val foundFragment = findFragmentByTag(fragmentTag)
+    foundFragment?.let {
+        beginTransaction()
+            .detach(foundFragment)
             .commitAllowingStateLoss()
+    }
+}
+
+fun FragmentManager.commitHide(fragmentTag: String) {
+    val foundFragment = findFragmentByTag(fragmentTag)
+    foundFragment?.let {
+        beginTransaction()
+            .hide(foundFragment)
+            .commitAllowingStateLoss()
+    }
+}
+
+fun FragmentManager.commitShow(fragmentTag: String) {
+    val foundFragment = findFragmentByTag(fragmentTag)
+    foundFragment?.let {
+        beginTransaction()
+            .show(foundFragment)
+            .commitAllowingStateLoss()
+    }
 }

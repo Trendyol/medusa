@@ -11,8 +11,9 @@ import android.widget.TextView
 import com.trendyol.medusalib.navigator.MultipleStackNavigator
 import com.trendyol.medusalib.navigator.NavigatorConfiguration
 import com.trendyol.medusalib.navigator.NavigatorListener
+import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigatorListener {
 
     private var mTextMessage: TextView? = null
 
@@ -57,19 +58,12 @@ class MainActivity : AppCompatActivity() {
 
 
         multipleStackNavigator = MultipleStackNavigator(
-                supportFragmentManager,
-                R.id.fragmentContainer,
-                rootFragmentList,
-                navigatorListener = object : NavigatorListener {
-                    override fun onTabChanged(tabIndex: Int) {
-                        when (tabIndex) {
-                            0 -> navigation.selectedItemId = R.id.navigation_home
-                            1 -> navigation.selectedItemId = R.id.navigation_dashboard
-                            2 -> navigation.selectedItemId = R.id.navigation_notifications
-                        }
-                    }
-                },
-                navigatorConfiguration = NavigatorConfiguration(1, true))
+            supportFragmentManager,
+            R.id.fragmentContainer,
+            rootFragmentList,
+            navigatorListener = this,
+            navigatorConfiguration = NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE))
+
 
         mTextMessage = findViewById<View>(R.id.message) as TextView?
         val restartRootFragmentCheckBox = findViewById<View>(R.id.restartSwitch) as SwitchCompat
@@ -85,6 +79,14 @@ class MainActivity : AppCompatActivity() {
             multipleStackNavigator!!.goBack()
         } else {
             super.onBackPressed()
+        }
+    }
+
+    override fun onTabChanged(tabIndex: Int) {
+        when (tabIndex) {
+            0 -> navigation.selectedItemId = R.id.navigation_home
+            1 -> navigation.selectedItemId = R.id.navigation_dashboard
+            2 -> navigation.selectedItemId = R.id.navigation_notifications
         }
     }
 }

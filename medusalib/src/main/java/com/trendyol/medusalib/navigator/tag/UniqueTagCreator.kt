@@ -1,4 +1,4 @@
-package com.trendyol.medusalib.navigator
+package com.trendyol.medusalib.navigator.tag
 
 import android.support.v4.app.Fragment
 
