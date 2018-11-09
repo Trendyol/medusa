@@ -4,59 +4,50 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 
-inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
-    val fragmentTransaction = beginTransaction()
-    fragmentTransaction.func()
-    fragmentTransaction.commitAllowingStateLoss()
-}
 
-fun FragmentManager.commitAdd(containerId: Int, fragment: Fragment, fragmentTag: String) {
-    beginTransaction()
-            .add(containerId, fragment, fragmentTag)
-            .commitAllowingStateLoss()
-}
+inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) =
+        beginTransaction().func().commitAllowingStateLoss()
 
-fun FragmentManager.commitRemove(fragmentTag: String) {
-    val foundFragment = findFragmentByTag(fragmentTag)
-    foundFragment?.let {
-        beginTransaction()
-                .remove(foundFragment)
-                .commitAllowingStateLoss()
-    }
-}
+fun FragmentManager.commitAdd(containerId: Int, fragment: Fragment, fragmentTag: String) =
+        inTransaction {
+            add(containerId, fragment, fragmentTag)
+        }
 
-fun FragmentManager.commitAttach(fragmentTag: String) {
-    val foundFragment = findFragmentByTag(fragmentTag)
-    foundFragment?.let {
-        beginTransaction()
-                .attach(foundFragment)
-                .commitAllowingStateLoss()
-    }
-}
 
-fun FragmentManager.commitDetach(fragmentTag: String) {
-    val foundFragment = findFragmentByTag(fragmentTag)
-    foundFragment?.let {
-        beginTransaction()
-            .detach(foundFragment)
-            .commitAllowingStateLoss()
-    }
-}
+fun FragmentManager.commitRemove(fragmentTag: String) =
+        findFragmentByTag(fragmentTag)?.let {
+            inTransaction {
+                remove(it)
+            }
+        }
+
+
+fun FragmentManager.commitAttach(fragmentTag: String) =
+        findFragmentByTag(fragmentTag)?.let {
+            inTransaction {
+                attach(it)
+            }
+        }
+
+fun FragmentManager.commitDetach(fragmentTag: String) =
+        findFragmentByTag(fragmentTag)?.let {
+            inTransaction {
+              detach(fragment)
+            }
+        }
 
 fun FragmentManager.commitHide(fragmentTag: String) {
-    val foundFragment = findFragmentByTag(fragmentTag)
-    foundFragment?.let {
-        beginTransaction()
-            .hide(foundFragment)
-            .commitAllowingStateLoss()
+    findFragmentByTag(fragmentTag)?.let {
+            inTransaction {
+              hide(fragment)
+            }
     }
 }
 
 fun FragmentManager.commitShow(fragmentTag: String) {
-    val foundFragment = findFragmentByTag(fragmentTag)
-    foundFragment?.let {
-        beginTransaction()
-            .show(foundFragment)
-            .commitAllowingStateLoss()
+    findFragmentByTag(fragmentTag)?.let {
+        inTransaction {
+              show(fragment)
+        }
     }
 }
