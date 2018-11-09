@@ -20,7 +20,7 @@ class UniqueTagCreatorTest {
         val fragmentTag = tagCreator.create(Fragment())
         val anotherFragmentTag = tagCreator.create(Fragment())
 
-        assertTrue("Fragment Tagleri Aynı.", fragmentTag != anotherFragmentTag)
+        assertTrue("Fragment Tags Are Same.", fragmentTag != anotherFragmentTag)
     }
 
     @Test
@@ -31,7 +31,7 @@ class UniqueTagCreatorTest {
         val fragmentTag = tagCreator.create(fragmentFirst)
         val anotherFragmentTag = tagCreator.create(fragmentSecond)
 
-        assertTrue("Fragment Tagleri Aynı Değil.", fragmentTag == anotherFragmentTag)
+        assertTrue("Fragment Tags Are Different.", fragmentTag == anotherFragmentTag)
     }
 
     @Test
@@ -42,7 +42,7 @@ class UniqueTagCreatorTest {
             val fragmentA = Fragment()
             val fragmentTagA = tagCreator.create(fragmentA)
 
-            assertFalse("Bir Tag'den birden fazla kere var.", resultSet.contains(fragmentTagA))
+            assertFalse("Tags Are Not Unique.", resultSet.contains(fragmentTagA))
             resultSet.add(fragmentTagA)
         }
     }
