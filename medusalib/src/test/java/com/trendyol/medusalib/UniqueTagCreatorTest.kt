@@ -16,7 +16,7 @@ class UniqueTagCreatorTest {
     }
 
     @Test
-    fun areFragmentTagsForDifferentInstance() {
+    fun areFragmentTagsDifferentForDifferentInstances() {
         val fragmentTag = tagCreator.create(Fragment())
         val anotherFragmentTag = tagCreator.create(Fragment())
 
