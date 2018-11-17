@@ -6,8 +6,8 @@ Medusa is smart enough to handle fragment attachment/detachment or hiding/showin
 
 ## Why? ##
 
-Single activity and Multi Fragment structure is new trend and reasonable to choose. Most of the popular apps like Instagram, Youtube, Spotify etc. are using Single Activity with bottom bar and controlling 
-multiple fragment in that single activity. 
+Single activity and Multi Fragment structure is a new trend and reasonable to choose. Most of the popular apps like Instagram, Youtube, Spotify etc. are using Single Activity with bottom bar and controlling 
+multiple fragments in that single activity. 
 
 In our [Trendyol.com](https://play.google.com/store/apps/details?id=trendyol.com) android application, we are also using Single Activity- Multi Fragment UI Structure. Everything seems fine when you decide using Single Activity- Multi Fragment, except fragment stack and controlling them. 
 
@@ -15,7 +15,7 @@ It was always hard to manage fragment manager in our application. We are using b
 
 So what happens when user switch back to home fragment? Which fragment should be visible to user? What happens when user starts going back? Which fragments will be visible to user in which order while user is pressing back button? What should happen? Yes this is confusing. 
 
-This is why we create medusa. It is not confusing anymore. Medusa keeps track of fragment history of every tab and you only call start, goBack to navigate your fragments. 
+This is why we create Medusa. It is not confusing anymore. Medusa keeps track of fragment history of every tab and you only call start, goBack to navigate your fragments. 
 
 ## Wiki ## 
 Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
