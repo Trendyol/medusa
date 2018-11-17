@@ -18,3 +18,4 @@ This is why we create medusa. It is not confusing anymore. Medusa keeps track of
 
 ## Wiki ## 
 Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
+* [Basic usage](https://github.com/Trendyol/medusa/wiki/Basic-Usage)
