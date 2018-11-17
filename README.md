@@ -1,5 +1,3 @@
-# medusa
-
 <img src="https://raw.githubusercontent.com/Trendyol/medusa/master/art/medusaicon.png"/>
 
 Fragment manager for your Single Activity - Multi Fragment app. 
