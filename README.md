@@ -1,4 +1,7 @@
-# 🐍medusa🐍 [UNDER DEVELOPMENT]
+# medusa
+
+<img src="https://raw.githubusercontent.com/Trendyol/medusa/master/art/medusaicon.png"/>
+
 Fragment manager for your Single Activity - Multi Fragment app. 
 
 Medusa is smart enough to handle fragment attachment/detachment or hiding/showing fragment.  No more memory handling. No more fragment stack logic.
