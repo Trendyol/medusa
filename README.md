@@ -1,14 +1,14 @@
 # 🐍medusa🐍 [UNDER DEVELOPMENT]
-Let the medusa fight with fragment stack for you.
-
-Basic start stop mechanism for multiple fragment stack app.
+Fragment manager for your Single Activity - Multi Fragment app. 
 
 Medusa is smart enough to handle fragment attachment/detachment or hiding/showing fragment.  No more memory handling. No more fragment stack logic.
 
 ## Why? ##
 
 Single activity and Multi Fragment structure is new trend and reasonable to choose. Most of the popular apps like Instagram, Youtube, Spotify etc. are using Single Activity with bottom bar and controlling 
-multiple fragment in that single activity. In our Trendyol.com android application, we are also using Single Activity- Multi Fragment UI Structure. Everything seems fine when you decide using Single Activity- Multi Fragment, except fragment stack and controlling them. 
+multiple fragment in that single activity. 
+
+In our [Trendyol.com](https://play.google.com/store/apps/details?id=trendyol.com) android application, we are also using Single Activity- Multi Fragment UI Structure. Everything seems fine when you decide using Single Activity- Multi Fragment, except fragment stack and controlling them. 
 
 It was always hard to manage fragment manager in our application. We are using bottom bar and user have his history in every bottom bar tab. For instance, In Home tab, use can goes 4-5 fragment deep in home tab.And then user switches to the another tab and goes 3-4 fragment in that tab too. 
 
