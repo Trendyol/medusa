@@ -21,6 +21,7 @@ This is why we create Medusa. It is not confusing anymore. Medusa keeps track of
 Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
 * [Basic usage](https://github.com/Trendyol/medusa/wiki/Basic-Usage)
 * [Fragment lifecycle with Medusa](https://github.com/Trendyol/medusa/wiki/Fragment-Lifecycle)
+* [Listeners](https://github.com/Trendyol/medusa/wiki/Listeners)
 * Coming soon..
 
 ## Icon Credits
