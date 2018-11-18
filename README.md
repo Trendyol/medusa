@@ -22,7 +22,6 @@ Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
 * [Basic usage](https://github.com/Trendyol/medusa/wiki/Basic-Usage)
 * [Fragment lifecycle with Medusa](https://github.com/Trendyol/medusa/wiki/Fragment-Lifecycle)
 * [Listeners](https://github.com/Trendyol/medusa/wiki/Listeners)
-* Coming soon..
 
 ## Icon Credits
 All credits goes to [Tatiana](https://dribbble.com/DarumaCreative)
