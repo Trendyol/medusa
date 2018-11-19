@@ -31,10 +31,13 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
     }
 
     override fun start(fragment: Fragment) {
-        val createdTag = tagCreator.create(fragment)
+        start(fragment, tagCreator.create(fragment))
+    }
+
+    override fun start(fragment: Fragment, tag: String) {
         val currentTabIndex = currentTabIndexStack.peek()
-        fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragment, createdTag)
-        fragmentTagStack[currentTabIndex].push(createdTag)
+        fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragment, tag)
+        fragmentTagStack[currentTabIndex].push(tag)
     }
 
     override fun goBack() {

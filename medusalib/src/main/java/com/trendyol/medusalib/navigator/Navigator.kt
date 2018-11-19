@@ -12,6 +12,15 @@ interface Navigator {
      */
     fun start(fragment: Fragment)
 
+    /**
+     * Adds new fragment to the fragment stack
+     * Hide currently active fragment and show newly
+     * added fragment to the user.
+     * @param fragment new fragment
+     * @param tag fragment tag
+     */
+    fun start(fragment: Fragment, tag: String)
+
 
     /**
      * Modifies fragment stack. Pops current fragment from
