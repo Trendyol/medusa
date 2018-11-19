@@ -65,6 +65,10 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         return fragmentManager.findFragmentByTag(fragmentTag) == null
     }
 
+    fun executePendings(){
+        fragmentManager.executePendingTransactions()
+    }
+
     private fun getFragment(fragmentTag: String): Fragment? {
         return fragmentManager.findFragmentByTag(fragmentTag)
     }

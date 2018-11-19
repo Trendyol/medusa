@@ -13,14 +13,13 @@ interface Navigator {
     fun start(fragment: Fragment)
 
     /**
-     * Adds new fragment to the fragment stack
-     * Hide currently active fragment and show newly
-     * added fragment to the user.
+     * Adds new fragment to the fragment stack with given tab index
+     * Hide currently active fragment, switches to given tab Index
+     * and show newly added fragment to the user.
      * @param fragment new fragment
-     * @param tag fragment tag
+     * @param tabIndex fragment will be added to given tabIndex history
      */
-    fun start(fragment: Fragment, tag: String)
-
+    fun start(fragment: Fragment, tabIndex: Int)
 
     /**
      * Modifies fragment stack. Pops current fragment from

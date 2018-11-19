@@ -30,14 +30,17 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         initializeStackWithRootFragments()
     }
 
-    override fun start(fragment: Fragment) {
-        start(fragment, tagCreator.create(fragment))
+    override fun start(fragment: Fragment, tabIndex: Int) {
+        switchTab(tabIndex)
+        start(fragment)
+        navigatorListener?.let { it.onTabChanged(tabIndex) }
     }
 
-    override fun start(fragment: Fragment, tag: String) {
+    override fun start(fragment: Fragment) {
+        val createdTag = tagCreator.create(fragment)
         val currentTabIndex = currentTabIndexStack.peek()
-        fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragment, tag)
-        fragmentTagStack[currentTabIndex].push(tag)
+        fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragment, createdTag)
+        fragmentTagStack[currentTabIndex].push(createdTag)
     }
 
     override fun goBack() {
@@ -93,6 +96,7 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         } else {
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
+        fragmentManagerController.executePendings()
     }
 
     override fun reset(tabIndex: Int, resetRootFragment: Boolean) {
