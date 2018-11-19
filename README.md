@@ -23,6 +23,20 @@ Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
 * [Fragment lifecycle with Medusa](https://github.com/Trendyol/medusa/wiki/Fragment-Lifecycle)
 * [Listeners](https://github.com/Trendyol/medusa/wiki/Listeners)
 
+## Setup
+```
+allprojects {
+    repositories {
+	    maven { url 'https://jitpack.io' }
+    }
+}
+```
+```
+dependencies {
+    implementation 'com.github.Trendyol.medusa:0.2'
+}
+```
+
 ## Icon Credits
 All credits goes to [Tatiana](https://dribbble.com/DarumaCreative)
 
