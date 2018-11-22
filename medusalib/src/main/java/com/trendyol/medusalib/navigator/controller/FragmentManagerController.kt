@@ -9,6 +9,7 @@ import com.trendyol.medusalib.common.extensions.commitHide
 import com.trendyol.medusalib.common.extensions.commitRemove
 import com.trendyol.medusalib.common.extensions.commitShow
 import com.trendyol.medusalib.navigator.OnNavigatorTransactionListener
+import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 import com.trendyol.medusalib.navigator.transaction.TransactionType
 
@@ -42,11 +43,11 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         fragmentManager.commitRemove(fragmentTag)
     }
 
-    fun addFragment(fragment: Fragment, fragmentTag: String) {
-        fragmentManager.commitAdd(containerId, fragment, fragmentTag)
+    fun addFragment(fragmentData: FragmentData) {
+        fragmentManager.commitAdd(containerId, fragmentData.fragment, fragmentData.fragmentTag)
     }
 
-    fun disableAndStartFragment(disableFragmentTag: String, startFragment: Fragment, startFragmentTag: String) {
+    fun disableAndStartFragment(disableFragmentTag: String, vararg fragmentDataArgs: FragmentData) {
         val disabledFragment = fragmentManager.findFragmentByTag(disableFragmentTag)
         val fragmentTransaction = fragmentManager.beginTransaction()
 
@@ -57,7 +58,10 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
             TransactionType.ATTACH_DETACH -> fragmentTransaction.detach(disabledFragment)
         }
 
-        fragmentTransaction.add(containerId, startFragment, startFragmentTag)
+        for (fragmentData in fragmentDataArgs){
+            fragmentTransaction.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
+        }
+
         fragmentTransaction.commitAllowingStateLoss()
     }
 

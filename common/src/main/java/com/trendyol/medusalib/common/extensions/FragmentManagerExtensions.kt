@@ -13,7 +13,6 @@ fun FragmentManager.commitAdd(containerId: Int, fragment: Fragment, fragmentTag:
         add(containerId, fragment, fragmentTag)
     }
 
-
 fun FragmentManager.commitRemove(fragmentTag: String) =
     findFragmentByTag(fragmentTag)?.let {
         inTransaction {

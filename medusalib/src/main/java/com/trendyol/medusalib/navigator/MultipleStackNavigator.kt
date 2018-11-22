@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import com.trendyol.medusalib.common.extensions.*
 import com.trendyol.medusalib.navigator.controller.FragmentManagerController
+import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.tag.TagCreator
 import com.trendyol.medusalib.navigator.tag.UniqueTagCreator
 import java.lang.IllegalStateException
@@ -39,7 +40,17 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
     override fun start(fragment: Fragment) {
         val createdTag = tagCreator.create(fragment)
         val currentTabIndex = currentTabIndexStack.peek()
-        fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragment, createdTag)
+        val fragmentData = FragmentData(fragment, createdTag)
+
+        if (fragmentTagStack[currentTabIndex].isEmpty()) {
+            val rootFragment = rootFragments[currentTabIndex]
+            val rootFragmentTag = tagCreator.create(rootFragment)
+            val rootFragmentData = FragmentData(rootFragment, rootFragmentTag)
+            fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), rootFragmentData, fragmentData)
+        } else {
+            fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragmentData)
+        }
+
         fragmentTagStack[currentTabIndex].push(createdTag)
     }
 
@@ -92,7 +103,8 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
 
         if (fragmentManagerController.isFragmentNull(upperFragmentTag)) {
             val rootFragment = getRootFragment(tabIndex)
-            fragmentManagerController.addFragment(rootFragment, upperFragmentTag)
+            val rootFragmentData = FragmentData(rootFragment, upperFragmentTag)
+            fragmentManagerController.addFragment(rootFragmentData)
         } else {
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
@@ -122,8 +134,9 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         if (resetRootFragment) {
             val rootFragment = getRootFragment(currentTabIndex)
             val createdTag = tagCreator.create(rootFragment)
+            val rootFragmentData = FragmentData(rootFragment, createdTag)
             fragmentTagStack[currentTabIndex].push(createdTag)
-            fragmentManagerController.addFragment(rootFragment, createdTag)
+            fragmentManagerController.addFragment(rootFragmentData)
         } else {
             showUpperFragmentByIndex(currentTabIndex)
         }
@@ -147,8 +160,9 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         val initialTabIndex = navigatorConfiguration.initialTabIndex
         val rootFragmentTag = fragmentTagStack[initialTabIndex].peek()
         val rootFragment = getRootFragment(initialTabIndex)
+        val rootFragmentData = FragmentData(rootFragment, rootFragmentTag)
         currentTabIndexStack.push(initialTabIndex)
-        fragmentManagerController.addFragment(rootFragment, rootFragmentTag)
+        fragmentManagerController.addFragment(rootFragmentData)
         navigatorListener?.let { it.onTabChanged(navigatorConfiguration.initialTabIndex) }
     }
 
