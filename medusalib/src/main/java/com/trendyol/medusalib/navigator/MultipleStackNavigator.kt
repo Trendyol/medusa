@@ -149,6 +149,10 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         initializeStackWithRootFragments()
     }
 
+    override fun hasOnlyRoot(tabIndex: Int): Boolean {
+        return fragmentTagStack[tabIndex].size <= 1
+    }
+
     private fun initializeStackWithRootFragments() {
         for (i in 0 until rootFragments.size) {
             val stack: Stack<String> = Stack()

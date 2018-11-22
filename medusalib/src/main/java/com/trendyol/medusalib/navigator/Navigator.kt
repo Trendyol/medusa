@@ -68,4 +68,11 @@ interface Navigator {
      * Destroys all fragments and restart the initial one.
      */
     fun reset()
+
+    /**
+     * Checks if stack has only root
+     * @param tabIndex
+     * @return true if only root fragment exists in the stack
+     */
+    fun hasOnlyRoot(tabIndex: Int): Boolean
 }
