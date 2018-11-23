@@ -166,7 +166,10 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         val rootFragment = getRootFragment(initialTabIndex)
         val rootFragmentData = FragmentData(rootFragment, rootFragmentTag)
         currentTabIndexStack.push(initialTabIndex)
-        fragmentManagerController.addFragment(rootFragmentData)
+        with(fragmentManagerController) {
+            addFragment(rootFragmentData)
+            executePendings()
+        }
         navigatorListener?.let { it.onTabChanged(navigatorConfiguration.initialTabIndex) }
     }
 

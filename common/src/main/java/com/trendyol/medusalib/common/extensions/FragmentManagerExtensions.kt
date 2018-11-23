@@ -5,8 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 
 
-inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) =
-    beginTransaction().func().commitAllowingStateLoss()
+inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) = beginTransaction().func().commitAllowingStateLoss()
 
 fun FragmentManager.commitAdd(containerId: Int, fragment: Fragment, fragmentTag: String) =
     inTransaction {

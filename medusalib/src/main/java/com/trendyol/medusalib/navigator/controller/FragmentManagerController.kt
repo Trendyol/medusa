@@ -49,6 +49,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
 
     fun disableAndStartFragment(disableFragmentTag: String, vararg fragmentDataArgs: FragmentData) {
         val disabledFragment = fragmentManager.findFragmentByTag(disableFragmentTag)
+
         val fragmentTransaction = fragmentManager.beginTransaction()
 
         val disabledFragmentNavigatorTransaction = getFragmentNavigatorTransaction(disableFragmentTag)
