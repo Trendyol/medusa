@@ -109,6 +109,8 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
         fragmentManagerController.executePendings()
+
+        navigatorListener?.onTabChanged(tabIndex)
     }
 
     override fun reset(tabIndex: Int, resetRootFragment: Boolean) {
