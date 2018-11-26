@@ -8,7 +8,7 @@ import com.trendyol.medusalib.common.extensions.commitDetach
 import com.trendyol.medusalib.common.extensions.commitHide
 import com.trendyol.medusalib.common.extensions.commitRemove
 import com.trendyol.medusalib.common.extensions.commitShow
-import com.trendyol.medusalib.navigator.OnNavigatorTransactionListener
+import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 import com.trendyol.medusalib.navigator.transaction.TransactionType
@@ -82,7 +82,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         var navigatorTransaction = navigatorTransaction
 
         getFragment(fragmentTag)?.let {
-            if (it is OnNavigatorTransactionListener) {
+            if (it is Navigator.OnNavigatorTransactionListener) {
                 navigatorTransaction = it.getNavigatorTransaction()
             }
         }

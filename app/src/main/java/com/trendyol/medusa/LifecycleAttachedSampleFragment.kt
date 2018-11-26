@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import com.trendyol.medusalib.navigator.OnNavigatorTransactionListener
+import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 
-class LifecycleAttachedSampleFragment : BaseFragment(), OnNavigatorTransactionListener {
+class LifecycleAttachedSampleFragment : BaseFragment(), Navigator.OnNavigatorTransactionListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sample, container, false)!!

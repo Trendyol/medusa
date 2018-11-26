@@ -14,7 +14,7 @@ import java.util.*
 class MultipleStackNavigator(private val fragmentManager: FragmentManager,
                              private val containerId: Int,
                              private val rootFragments: List<Fragment>,
-                             private var navigatorListener: NavigatorListener? = null,
+                             private var navigatorListener: Navigator.NavigatorListener? = null,
                              private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration()) : Navigator {
 
     private val tagCreator: TagCreator = UniqueTagCreator()
@@ -25,7 +25,7 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
 
     private val currentTabIndexStack: Stack<Int> = Stack()
 
-    var onGoBackListener: OnGoBackListener? = null
+    var onGoBackListener: Navigator.OnGoBackListener? = null
 
     init {
         initializeStackWithRootFragments()
