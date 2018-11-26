@@ -59,7 +59,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
             TransactionType.ATTACH_DETACH -> fragmentTransaction.detach(disabledFragment)
         }
 
-        for (fragmentData in fragmentDataArgs){
+        for (fragmentData in fragmentDataArgs) {
             fragmentTransaction.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
         }
 
@@ -70,11 +70,11 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         return fragmentManager.findFragmentByTag(fragmentTag) == null
     }
 
-    fun executePendings(){
+    fun executePendings() {
         fragmentManager.executePendingTransactions()
     }
 
-    private fun getFragment(fragmentTag: String): Fragment? {
+    fun getFragment(fragmentTag: String): Fragment? {
         return fragmentManager.findFragmentByTag(fragmentTag)
     }
 

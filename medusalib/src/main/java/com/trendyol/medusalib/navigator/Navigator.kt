@@ -75,4 +75,9 @@ interface Navigator {
      * @return true if only root fragment exists in the stack
      */
     fun hasOnlyRoot(tabIndex: Int): Boolean
+
+    /**
+     * @return current visible fragment
+     */
+    fun getCurrentFragment(): Fragment?
 }
