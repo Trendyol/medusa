@@ -9,11 +9,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.trendyol.medusalib.navigator.MultipleStackNavigator
+import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.NavigatorConfiguration
-import com.trendyol.medusalib.navigator.NavigatorListener
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 
-class MainActivity : AppCompatActivity(), NavigatorListener {
+class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
     private var mTextMessage: TextView? = null
 

@@ -1,6 +1,7 @@
 package com.trendyol.medusalib.navigator
 
 import android.support.v4.app.Fragment
+import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 
 interface Navigator {
 
@@ -80,4 +81,28 @@ interface Navigator {
      * @return current visible fragment
      */
     fun getCurrentFragment(): Fragment?
+
+    /**
+     * Listeners
+     */
+
+    interface NavigatorListener {
+
+        /**
+         * Called when user pressed to the back button and
+         * fragment stack is empty in current tab index.
+         *
+         * @param tabIndex is passed from navigator library and client
+         * can use tabIndex parameter to update navigation UI
+         */
+        fun onTabChanged(tabIndex: Int)
+    }
+
+    interface OnGoBackListener {
+        fun onGoBack(): Boolean
+    }
+
+    interface OnNavigatorTransactionListener {
+        fun getNavigatorTransaction(): NavigatorTransaction
+    }
 }

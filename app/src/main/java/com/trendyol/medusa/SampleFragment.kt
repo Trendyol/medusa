@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import com.trendyol.medusalib.navigator.OnGoBackListener
+import com.trendyol.medusalib.navigator.Navigator
 
-class SampleFragment : BaseFragment(), OnGoBackListener{
+class SampleFragment : BaseFragment(), Navigator.OnGoBackListener {
 
     override fun onGoBack(): Boolean {
         return true
@@ -28,22 +28,22 @@ class SampleFragment : BaseFragment(), OnGoBackListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.v("TEST","CREATE ${arguments!!.getString(KEY)}")
+        Log.v("TEST", "CREATE ${arguments!!.getString(KEY)}")
     }
 
     override fun onStop() {
         super.onStop()
-        Log.v("TEST","STOP ${arguments!!.getString(KEY)}")
+        Log.v("TEST", "STOP ${arguments!!.getString(KEY)}")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.v("TEST","DESTROY ${arguments!!.getString(KEY)}")
+        Log.v("TEST", "DESTROY ${arguments!!.getString(KEY)}")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.v("TEST","RESUME ${arguments!!.getString(KEY)}")
+        Log.v("TEST", "RESUME ${arguments!!.getString(KEY)}")
     }
 
     companion object {
