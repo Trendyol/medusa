@@ -79,7 +79,7 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             fragmentManagerController.removeFragment(currentFragmentTag)
         }
 
-        showUpperFragmentByIndex(currentTabIndexStack.peek())
+        showUpperFragment()
     }
 
     override fun canGoBack(): Boolean {
@@ -100,16 +100,7 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             currentTabIndexStack.moveToTop(tabIndex)
         }
 
-        val upperFragmentTag = fragmentTagStack[tabIndex].peek().fragmentTag
-
-        if (fragmentManagerController.isFragmentNull(upperFragmentTag)) {
-            val rootFragment = getRootFragment(tabIndex)
-            val rootFragmentData = FragmentData(rootFragment, upperFragmentTag)
-            fragmentManagerController.addFragment(rootFragmentData)
-        } else {
-            fragmentManagerController.enableFragment(upperFragmentTag)
-        }
-        fragmentManagerController.executePendings()
+        showUpperFragment()
 
         navigatorListener?.onTabChanged(tabIndex)
     }
@@ -141,8 +132,10 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             fragmentTagStack[currentTabIndex].push(StackItem(fragmentTag = createdTag))
             fragmentManagerController.addFragment(rootFragmentData)
         } else {
-            showUpperFragmentByIndex(currentTabIndex)
+            val upperFragmentTag = fragmentTagStack[currentTabIndex].peek().fragmentTag
+            fragmentManagerController.enableFragment(upperFragmentTag)
         }
+        fragmentManagerController.executePendings()
     }
 
     override fun reset() {
@@ -185,9 +178,16 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
 
     private fun getRootFragment(tabIndex: Int): Fragment = rootFragments[tabIndex]
 
-    private fun showUpperFragmentByIndex(tabIndex: Int) {
-        val upperFragmentTag = fragmentTagStack[tabIndex].peek().fragmentTag
-        fragmentManagerController.enableFragment(upperFragmentTag)
+    private fun showUpperFragment() {
+        val upperFragmentTag = fragmentTagStack[currentTabIndexStack.peek()].peek().fragmentTag
+        if (fragmentManagerController.isFragmentNull(upperFragmentTag)) {
+            val rootFragment = getRootFragment(currentTabIndexStack.peek())
+            val rootFragmentData = FragmentData(rootFragment, upperFragmentTag)
+            fragmentManagerController.addFragment(rootFragmentData)
+        } else {
+            fragmentManagerController.enableFragment(upperFragmentTag)
+        }
+        fragmentManagerController.executePendings()
     }
 
     private fun getCurrentFragmentTag(): String {
