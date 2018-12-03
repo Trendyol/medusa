@@ -2,6 +2,7 @@ package com.trendyol.medusalib.navigator.controller
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import com.trendyol.medusalib.common.extensions.commitAdd
 import com.trendyol.medusalib.common.extensions.commitAttach
 import com.trendyol.medusalib.common.extensions.commitDetach
@@ -41,6 +42,17 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
 
     fun removeFragment(fragmentTag: String) {
         fragmentManager.commitRemove(fragmentTag)
+    }
+
+    fun removeFragments(fragmentTagList: List<String>) {
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        for (fragmentTag in fragmentTagList) {
+            val fragment = fragmentManager.findFragmentByTag(fragmentTag)
+            fragment?.let { fragmentTransaction.remove(it) }
+        }
+
+        fragmentTransaction.commit()
+        fragmentManager.executePendingTransactions()
     }
 
     fun addFragment(fragmentData: FragmentData) {

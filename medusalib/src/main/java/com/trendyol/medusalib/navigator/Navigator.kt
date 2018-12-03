@@ -14,6 +14,18 @@ interface Navigator {
     fun start(fragment: Fragment)
 
     /**
+     * Adds new fragment to the fragment stack with given group name.
+     * Group name is used to keep fragments in the same group. So
+     * you can easily remove only grouped fragments.
+     * Hide currently active fragment and show newly
+     * added fragment to the user.
+     * @param fragment new fragment
+     * @param fragmentGroupName will be used in case of you want to remove
+     * all fragments which has the same group name.
+     */
+    fun start(fragment: Fragment, fragmentGroupName: String)
+
+    /**
      * Adds new fragment to the fragment stack with given tab index
      * Hide currently active fragment, switches to given tab Index
      * and show newly added fragment to the user.
@@ -21,6 +33,17 @@ interface Navigator {
      * @param tabIndex fragment will be added to given tabIndex history
      */
     fun start(fragment: Fragment, tabIndex: Int)
+
+    /**
+     * Adds new fragment to the fragment stack with given tab index.
+     * Hide currently active fragment, switches to given tab Index
+     * and show newly added fragment to the user.
+     * @param fragment new fragment
+     * @param tabIndex fragment will be added to given tabIndex history
+     * @param fragmentGroupName will be used in case of you want to remove
+     * all fragments which has the same group name.
+     */
+    fun start(fragment: Fragment, tabIndex: Int, fragmentGroupName: String)
 
     /**
      * Modifies fragment stack. Pops current fragment from
@@ -71,6 +94,15 @@ interface Navigator {
     fun reset()
 
     /**
+     * Clears all fragments with given group name in the
+     * current tab. This method aims to clear all
+     * related/steps fragments from tab.
+     * For instance; you can navigate user to 3 fragment step by step,
+     * When user success in this navigation, clears 3 steps from history.
+     */
+    fun clearGroup(fragmentGroupName: String)
+
+    /**
      * Checks if stack has only root
      * @param tabIndex
      * @return true if only root fragment exists in the stack
@@ -99,10 +131,32 @@ interface Navigator {
     }
 
     interface OnGoBackListener {
+        /**
+         * On some fragments, fragment can decide that it
+         * can goes back or not. Override this method
+         * to use fragment specific logic
+         * to let navigator pop it from stack.
+         *
+         * For example; If you have recyclerview and you want
+         * to scroll to top before user goes back, you can use this
+         * interface method.
+         *
+         * @return false if fragment doesn't let the navigator
+         * go back, true otherwise.
+         */
         fun onGoBack(): Boolean
     }
 
     interface OnNavigatorTransactionListener {
+        /**
+         * Decide the way fragment transaction.
+         * Fragment can override this method and
+         * change the transaction behaviour of the
+         * fragment.
+         * @return NavigatorTransaction type (ATTACH_DETACH or SHOW_HIDE)
+         *
+         * @see https://github.com/Trendyol/medusa/wiki/Fragment-Lifecycle
+         */
         fun getNavigatorTransaction(): NavigatorTransaction
     }
 }

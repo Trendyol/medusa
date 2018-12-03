@@ -32,13 +32,21 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         initializeStackWithRootFragments()
     }
 
+    override fun start(fragment: Fragment) {
+        start(fragment, DEFAULT_GROUP_NAME)
+    }
+
     override fun start(fragment: Fragment, tabIndex: Int) {
+        start(fragment, tabIndex, DEFAULT_GROUP_NAME)
+    }
+
+    override fun start(fragment: Fragment, tabIndex: Int, fragmentGroupName: String) {
         switchTab(tabIndex)
-        start(fragment)
+        start(fragment, fragmentGroupName)
         navigatorListener?.let { it.onTabChanged(tabIndex) }
     }
 
-    override fun start(fragment: Fragment) {
+    override fun start(fragment: Fragment, fragmentGroupName: String) {
         val createdTag = tagCreator.create(fragment)
         val currentTabIndex = currentTabIndexStack.peek()
         val fragmentData = FragmentData(fragment, createdTag)
@@ -52,7 +60,7 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragmentData)
         }
 
-        fragmentTagStack[currentTabIndex].push(StackItem(fragmentTag = createdTag))
+        fragmentTagStack[currentTabIndex].push(StackItem(fragmentTag = createdTag, groupName = fragmentGroupName))
     }
 
     override fun goBack() {
@@ -145,6 +153,35 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         initializeStackWithRootFragments()
     }
 
+    override fun clearGroup(fragmentGroupName: String) {
+        if (fragmentGroupName == DEFAULT_GROUP_NAME) {
+            throw IllegalArgumentException("Fragment group name can not be empty.")
+        }
+
+        val currentTabIndex = currentTabIndexStack.peek()
+        val currentTabStack = fragmentTagStack[currentTabIndex]
+
+        val updatedTabStack = Stack<StackItem>()
+        updatedTabStack.push(currentTabStack[0])
+
+        val deletedStackItems = arrayListOf<StackItem>()
+
+        for (i in 1 until currentTabStack.size) {
+            val stackItem = currentTabStack[i]
+            if(fragmentGroupName == stackItem.groupName){
+                deletedStackItems.add(stackItem)
+            }else{
+                updatedTabStack.push(stackItem)
+            }
+        }
+
+        if (deletedStackItems.isEmpty().not()) {
+            fragmentTagStack[currentTabIndex] = updatedTabStack
+            fragmentManagerController.removeFragments(deletedStackItems.map { it.fragmentTag }.toList())
+            showUpperFragment()
+        }
+    }
+
     override fun hasOnlyRoot(tabIndex: Int): Boolean {
         return fragmentTagStack[tabIndex].size <= 1
     }
@@ -234,5 +271,9 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
 
         fragmentTransaction.commitAllowingStateLoss()
         fragmentManager.executePendingTransactions()
+    }
+
+    companion object {
+        const val DEFAULT_GROUP_NAME = ""
     }
 }
