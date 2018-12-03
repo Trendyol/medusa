@@ -19,10 +19,8 @@ class SampleFragment : BaseFragment(), Navigator.OnGoBackListener {
         val view = inflater.inflate(R.layout.fragment_sample, container, false)!!
         view.findViewById<TextView>(R.id.textview).text = arguments!!.getString(KEY)
         view.findViewById<Button>(R.id.button).setOnClickListener {
-            multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment(), (Math.random() * 3).toInt())
+            multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment())
         }
-
-        multipleStackNavigator!!.onGoBackListener = this
         return view
     }
 

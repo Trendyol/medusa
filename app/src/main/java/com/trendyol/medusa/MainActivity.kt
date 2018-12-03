@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
     private val rootFragmentList: MutableList<Fragment> = ArrayList()
 
-
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
