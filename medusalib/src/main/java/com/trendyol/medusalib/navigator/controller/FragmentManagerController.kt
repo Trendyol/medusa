@@ -76,6 +76,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         }
 
         fragmentTransaction.commitAllowingStateLoss()
+        executePendings()
     }
 
     fun isFragmentNull(fragmentTag: String): Boolean {
