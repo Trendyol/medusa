@@ -12,7 +12,7 @@ import com.trendyol.medusalib.navigator.tag.UniqueTagCreator
 import java.lang.IllegalStateException
 import java.util.*
 
-class MultipleStackNavigator(private val fragmentManager: FragmentManager,
+open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
                              private val containerId: Int,
                              private val rootFragments: List<Fragment>,
                              private var navigatorListener: Navigator.NavigatorListener? = null,
