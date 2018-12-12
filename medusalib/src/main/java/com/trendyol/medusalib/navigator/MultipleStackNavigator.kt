@@ -26,8 +26,6 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
 
     private val currentTabIndexStack: Stack<Int> = Stack()
 
-    var onGoBackListener: Navigator.OnGoBackListener? = null
-
     init {
         initializeStackWithRootFragments()
     }
@@ -68,9 +66,7 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             throw IllegalStateException("Can not call goBack() method because stack is empty.")
         }
 
-        if (onGoBackListener != null && onGoBackListener!!.onGoBack().not()) {
-            return
-        }
+        if (canFragmentGoBack().not()) return
 
         if (shouldExit() && shouldGoBackToInitialIndex()) {
             currentTabIndexStack.insertToBottom(navigatorConfiguration.initialTabIndex)
@@ -168,9 +164,9 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
 
         for (i in 1 until currentTabStack.size) {
             val stackItem = currentTabStack[i]
-            if(fragmentGroupName == stackItem.groupName){
+            if (fragmentGroupName == stackItem.groupName) {
                 deletedStackItems.add(stackItem)
-            }else{
+            } else {
                 updatedTabStack.push(stackItem)
             }
         }
@@ -271,6 +267,13 @@ class MultipleStackNavigator(private val fragmentManager: FragmentManager,
 
         fragmentTransaction.commitAllowingStateLoss()
         fragmentManager.executePendingTransactions()
+    }
+
+    private fun canFragmentGoBack(): Boolean {
+        if (getCurrentFragment() is Navigator.OnGoBackListener) {
+            return (getCurrentFragment() as Navigator.OnGoBackListener).onGoBack()
+        }
+        return true
     }
 
     companion object {
