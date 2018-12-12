@@ -22,6 +22,7 @@ Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
 * [Basic usage](https://github.com/Trendyol/medusa/wiki/Basic-Usage)
 * [Fragment lifecycle with Medusa](https://github.com/Trendyol/medusa/wiki/Fragment-Lifecycle)
 * [Listeners](https://github.com/Trendyol/medusa/wiki/Listeners)
+* [Grouping fragments](https://github.com/Trendyol/medusa/wiki/Grouping-Fragments)
 
 ## Setup
 ```
