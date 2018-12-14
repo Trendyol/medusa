@@ -27,6 +27,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
                 TransactionType.ATTACH_DETACH -> commitAttach(fragmentTag)
             }
         }
+        executePendings()
     }
 
     fun disableFragment(fragmentTag: String) {
@@ -38,6 +39,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
                 TransactionType.ATTACH_DETACH -> commitDetach(fragmentTag)
             }
         }
+        executePendings()
     }
 
     fun removeFragment(fragmentTag: String) {
@@ -52,7 +54,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         }
 
         fragmentTransaction.commit()
-        fragmentManager.executePendingTransactions()
+        executePendings()
     }
 
     fun addFragment(fragmentData: FragmentData) {
