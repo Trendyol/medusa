@@ -2,6 +2,9 @@
 
 Fragment manager for your Single Activity - Multi Fragment app. 
 
+[![](https://jitpack.io/v/Trendyol/medusa.svg)](https://jitpack.io/#Trendyol/medusa)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 Medusa is smart enough to handle fragment attachment/detachment or hiding/showing fragment.  No more memory handling. No more fragment stack logic.
 
 ## Why? ##
