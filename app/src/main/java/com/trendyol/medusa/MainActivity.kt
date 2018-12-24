@@ -55,14 +55,12 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
         rootFragmentList.add(secondTabFragment)
         rootFragmentList.add(thirdTabFragment)
 
-
         multipleStackNavigator = MultipleStackNavigator(
             supportFragmentManager,
             R.id.fragmentContainer,
             rootFragmentList,
             navigatorListener = this,
             navigatorConfiguration = NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE))
-
 
         mTextMessage = findViewById<View>(R.id.message) as TextView?
         val restartRootFragmentCheckBox = findViewById<View>(R.id.restartSwitch) as SwitchCompat
