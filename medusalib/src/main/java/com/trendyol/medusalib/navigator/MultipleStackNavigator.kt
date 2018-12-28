@@ -2,7 +2,6 @@ package com.trendyol.medusalib.navigator
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
 import com.trendyol.medusalib.common.extensions.*
 import com.trendyol.medusalib.navigator.controller.FragmentManagerController
 import com.trendyol.medusalib.navigator.data.FragmentData
@@ -237,14 +236,12 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
     }
 
     private fun clearAllFragments() {
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         for (tagStack in fragmentTagStack) {
             while (tagStack.isEmpty().not()) {
-                val currentFragment = fragmentManager.findFragmentByTag(tagStack.pop().fragmentTag)
-                currentFragment?.let { fragmentTransaction.remove(it) }
+                fragmentManagerController.findFragmentByTagAndRemove(tagStack.pop().fragmentTag)
             }
         }
-        fragmentTransaction.commit()
+        fragmentManagerController.commitNowAllowingStateLoss()
         fragmentManager.executePendingTransactions()
     }
 
@@ -253,19 +250,16 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             return
         }
 
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-
         while (fragmentTagStack[tabIndex].empty().not()) {
             if (fragmentTagStack[tabIndex].size == 1 && resetRootFragment.not()) {
                 break
             }
 
             val fragmentTagToBeRemoved = fragmentTagStack[tabIndex].pop().fragmentTag
-            val fragmentToBeRemoved = fragmentManager.findFragmentByTag(fragmentTagToBeRemoved)
-            fragmentToBeRemoved?.let { fragmentTransaction.remove(fragmentToBeRemoved) }
+            fragmentManagerController.findFragmentByTagAndRemove(fragmentTagToBeRemoved)
         }
 
-        fragmentTransaction.commitAllowingStateLoss()
+        fragmentManagerController.commitNowAllowingStateLoss()
         fragmentManager.executePendingTransactions()
     }
 

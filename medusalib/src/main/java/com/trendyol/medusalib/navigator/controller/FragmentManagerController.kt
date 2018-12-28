@@ -18,6 +18,8 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
                                 private val containerId: Int,
                                 private val navigatorTransaction: NavigatorTransaction) {
 
+    private var currentTransaction: FragmentTransaction? = null
+
     fun enableFragment(fragmentTag: String) {
         val navigatorTransaction = getFragmentNavigatorTransaction(fragmentTag)
 
@@ -43,41 +45,51 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     }
 
     fun removeFragment(fragmentTag: String) {
-        fragmentManager.commitRemove(fragmentTag)
+        if (currentTransaction == null) {
+            currentTransaction = fragmentManager.beginTransaction()
+        }
+        currentTransaction?.remove(fragmentManager.findFragmentByTag(fragmentTag))?.commitNowAllowingStateLoss()
     }
 
     fun removeFragments(fragmentTagList: List<String>) {
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        if (currentTransaction == null) {
+            currentTransaction = fragmentManager.beginTransaction()
+        }
         for (fragmentTag in fragmentTagList) {
             val fragment = fragmentManager.findFragmentByTag(fragmentTag)
-            fragment?.let { fragmentTransaction.remove(it) }
+            fragment?.let { currentTransaction?.remove(it) }
         }
 
-        fragmentTransaction.commit()
+        currentTransaction?.commitNowAllowingStateLoss()
         executePendings()
     }
 
     fun addFragment(fragmentData: FragmentData) {
-        fragmentManager.commitAdd(containerId, fragmentData.fragment, fragmentData.fragmentTag)
+        if (currentTransaction == null) {
+            currentTransaction = fragmentManager.beginTransaction()
+        }
+        currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)?.commitNowAllowingStateLoss()
     }
 
     fun disableAndStartFragment(disableFragmentTag: String, vararg fragmentDataArgs: FragmentData) {
         val disabledFragment = fragmentManager.findFragmentByTag(disableFragmentTag)
 
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        if (currentTransaction == null) {
+            currentTransaction = fragmentManager.beginTransaction()
+        }
 
         val disabledFragmentNavigatorTransaction = getFragmentNavigatorTransaction(disableFragmentTag)
 
         when (disabledFragmentNavigatorTransaction.transactionType) {
-            TransactionType.SHOW_HIDE -> fragmentTransaction.hide(disabledFragment)
-            TransactionType.ATTACH_DETACH -> fragmentTransaction.detach(disabledFragment)
+            TransactionType.SHOW_HIDE -> currentTransaction?.hide(disabledFragment)
+            TransactionType.ATTACH_DETACH -> currentTransaction?.detach(disabledFragment)
         }
 
         for (fragmentData in fragmentDataArgs) {
-            fragmentTransaction.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
+            currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
         }
 
-        fragmentTransaction.commitAllowingStateLoss()
+        currentTransaction?.commitNowAllowingStateLoss()
         executePendings()
     }
 
@@ -86,7 +98,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     }
 
     fun executePendings() {
-        fragmentManager.executePendingTransactions()
+        //fragmentManager.executePendingTransactions()
     }
 
     fun getFragment(fragmentTag: String): Fragment? {
@@ -104,4 +116,15 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
 
         return navigatorTransaction
     }
+
+    fun findFragmentByTagAndRemove(fragmentTag: String) {
+        if (currentTransaction == null) {
+            currentTransaction = fragmentManager.beginTransaction()
+        }
+
+        val fragment = fragmentManager.findFragmentByTag(fragmentTag)
+        fragment?.let { currentTransaction?.remove(it) }
+    }
+
+    fun commitNowAllowingStateLoss() = currentTransaction?.commitNowAllowingStateLoss()
 }
