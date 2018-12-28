@@ -138,7 +138,6 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             val upperFragmentTag = fragmentTagStack[currentTabIndex].peek().fragmentTag
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
-        fragmentManagerController.executePendings()
     }
 
     override fun reset() {
@@ -203,7 +202,6 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         currentTabIndexStack.push(initialTabIndex)
         with(fragmentManagerController) {
             addFragment(rootFragmentData)
-            executePendings()
         }
         navigatorListener?.let { it.onTabChanged(navigatorConfiguration.initialTabIndex) }
     }
@@ -219,7 +217,6 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         } else {
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
-        fragmentManagerController.executePendings()
     }
 
     private fun getCurrentFragmentTag(): String {
