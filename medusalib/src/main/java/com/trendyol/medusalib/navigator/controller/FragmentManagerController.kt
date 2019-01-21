@@ -106,6 +106,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     fun commitNowAllowingStateLoss() {
         currentTransaction?.commitNowAllowingStateLoss()
         currentTransaction = null
+        executePendings()
     }
 
 
