@@ -32,8 +32,3 @@ internal fun FragmentTransaction.remove(fragment: Fragment?): FragmentTransactio
         return this.remove(it)
     }
 }
-
-internal fun FragmentTransaction.commitNowAllowingStateLoss(allowReordering: Boolean) {
-    this.setReorderingAllowed(allowReordering)
-        .commitNowAllowingStateLoss()
-}
