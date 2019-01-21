@@ -3,6 +3,11 @@ package com.trendyol.medusalib.navigator.controller
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
+import com.trendyol.medusalib.common.extensions.attach
+import com.trendyol.medusalib.common.extensions.detach
+import com.trendyol.medusalib.common.extensions.hide
+import com.trendyol.medusalib.common.extensions.show
+import com.trendyol.medusalib.common.extensions.remove
 import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
