@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import com.trendyol.medusalib.common.extensions.attach
+import com.trendyol.medusalib.common.extensions.commitNowAllowingStateLoss
 import com.trendyol.medusalib.common.extensions.detach
 import com.trendyol.medusalib.common.extensions.hide
 import com.trendyol.medusalib.common.extensions.show
@@ -109,9 +110,9 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     }
 
     fun commitNowAllowingStateLoss() {
-        currentTransaction?.commitNowAllowingStateLoss()
+        currentTransaction?.commitNowAllowingStateLoss(allowReordering = true)
         currentTransaction = null
-//        executePendings()
+        executePendings()
     }
 
 
