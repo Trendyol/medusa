@@ -82,10 +82,6 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         return getFragment(fragmentTag) == null
     }
 
-    fun executePendings() {
-        fragmentManager.executePendingTransactions()
-    }
-
     fun getFragment(fragmentTag: String): Fragment? {
         return fragmentManager.findFragmentByTag(fragmentTag)
     }
@@ -109,34 +105,33 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     }
 
     fun commitNowAllowingStateLoss() {
-        currentTransaction?.commitNowAllowingStateLoss()
+        currentTransaction?.commitNow()
         currentTransaction = null
-        executePendings()
     }
 
 
-    fun commitShow(fragmentTag: String) {
+    private fun commitShow(fragmentTag: String) {
         checkAndCreateTransaction()
 
         currentTransaction?.show(getFragment(fragmentTag))
         commitNowAllowingStateLoss()
     }
 
-    fun commitAttach(fragmentTag: String) {
+    private fun commitAttach(fragmentTag: String) {
         checkAndCreateTransaction()
 
         currentTransaction?.attach(getFragment(fragmentTag))
         commitNowAllowingStateLoss()
     }
 
-    fun commitHide(fragmentTag: String) {
+    private fun commitHide(fragmentTag: String) {
         checkAndCreateTransaction()
 
         currentTransaction?.hide(getFragment(fragmentTag))
         commitNowAllowingStateLoss()
     }
 
-    fun commitDetach(fragmentTag: String) {
+    private fun commitDetach(fragmentTag: String) {
         checkAndCreateTransaction()
 
         currentTransaction?.detach(getFragment(fragmentTag))
