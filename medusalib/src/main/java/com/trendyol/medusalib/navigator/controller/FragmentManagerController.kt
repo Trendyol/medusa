@@ -104,13 +104,6 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         getFragment(fragmentTag)?.let { currentTransaction?.remove(it) }
     }
 
-    fun commitNowAllowingStateLoss() {
-        currentTransaction?.runOnCommit {
-            currentTransaction = null
-        }?.commit()
-    }
-
-
     private fun commitShow(fragmentTag: String) {
         checkAndCreateTransaction()
 
@@ -137,6 +130,15 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
 
         currentTransaction?.detach(getFragment(fragmentTag))
         commitNowAllowingStateLoss()
+    }
+
+    fun commitNowAllowingStateLoss() {
+        try {
+            currentTransaction?.commitNowAllowingStateLoss()
+            currentTransaction = null
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
     }
 
     private fun checkAndCreateTransaction() {
