@@ -133,12 +133,8 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     }
 
     fun commitNowAllowingStateLoss() {
-        try {
-            currentTransaction?.commitNowAllowingStateLoss()
-            currentTransaction = null
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
+        currentTransaction?.commitNowAllowingStateLoss()
+        currentTransaction = null
     }
 
     private fun checkAndCreateTransaction() {
