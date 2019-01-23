@@ -3,12 +3,11 @@ package com.trendyol.medusalib.navigator.controller
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
-import com.trendyol.medusalib.common.extensions.commitAdd
-import com.trendyol.medusalib.common.extensions.commitAttach
-import com.trendyol.medusalib.common.extensions.commitDetach
-import com.trendyol.medusalib.common.extensions.commitHide
-import com.trendyol.medusalib.common.extensions.commitRemove
-import com.trendyol.medusalib.common.extensions.commitShow
+import com.trendyol.medusalib.common.extensions.attach
+import com.trendyol.medusalib.common.extensions.detach
+import com.trendyol.medusalib.common.extensions.hide
+import com.trendyol.medusalib.common.extensions.show
+import com.trendyol.medusalib.common.extensions.remove
 import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
@@ -18,75 +17,69 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
                                 private val containerId: Int,
                                 private val navigatorTransaction: NavigatorTransaction) {
 
+    private var currentTransaction: FragmentTransaction? = null
+
     fun enableFragment(fragmentTag: String) {
         val navigatorTransaction = getFragmentNavigatorTransaction(fragmentTag)
 
-        with(fragmentManager) {
-            when (navigatorTransaction.transactionType) {
-                TransactionType.SHOW_HIDE -> commitShow(fragmentTag)
-                TransactionType.ATTACH_DETACH -> commitAttach(fragmentTag)
-            }
+        when (navigatorTransaction.transactionType) {
+            TransactionType.SHOW_HIDE -> commitShow(fragmentTag)
+            TransactionType.ATTACH_DETACH -> commitAttach(fragmentTag)
         }
-        executePendings()
     }
 
     fun disableFragment(fragmentTag: String) {
         val navigatorTransaction = getFragmentNavigatorTransaction(fragmentTag)
 
-        with(fragmentManager) {
-            when (navigatorTransaction.transactionType) {
-                TransactionType.SHOW_HIDE -> commitHide(fragmentTag)
-                TransactionType.ATTACH_DETACH -> commitDetach(fragmentTag)
-            }
+        when (navigatorTransaction.transactionType) {
+            TransactionType.SHOW_HIDE -> commitHide(fragmentTag)
+            TransactionType.ATTACH_DETACH -> commitDetach(fragmentTag)
         }
-        executePendings()
     }
 
     fun removeFragment(fragmentTag: String) {
-        fragmentManager.commitRemove(fragmentTag)
+        checkAndCreateTransaction()
+        currentTransaction?.remove(getFragment(fragmentTag))
+        commitNowAllowingStateLoss()
     }
 
     fun removeFragments(fragmentTagList: List<String>) {
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        for (fragmentTag in fragmentTagList) {
-            val fragment = fragmentManager.findFragmentByTag(fragmentTag)
-            fragment?.let { fragmentTransaction.remove(it) }
-        }
+        checkAndCreateTransaction()
 
-        fragmentTransaction.commit()
-        executePendings()
+        for (fragmentTag in fragmentTagList) {
+            getFragment(fragmentTag)?.let { currentTransaction?.remove(it) }
+        }
+        commitNowAllowingStateLoss()
     }
 
     fun addFragment(fragmentData: FragmentData) {
-        fragmentManager.commitAdd(containerId, fragmentData.fragment, fragmentData.fragmentTag)
+        checkAndCreateTransaction()
+
+        currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
+        commitNowAllowingStateLoss()
     }
 
     fun disableAndStartFragment(disableFragmentTag: String, vararg fragmentDataArgs: FragmentData) {
-        val disabledFragment = fragmentManager.findFragmentByTag(disableFragmentTag)
+        val disabledFragment = getFragment(disableFragmentTag)
 
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        checkAndCreateTransaction()
 
         val disabledFragmentNavigatorTransaction = getFragmentNavigatorTransaction(disableFragmentTag)
 
         when (disabledFragmentNavigatorTransaction.transactionType) {
-            TransactionType.SHOW_HIDE -> fragmentTransaction.hide(disabledFragment)
-            TransactionType.ATTACH_DETACH -> fragmentTransaction.detach(disabledFragment)
+            TransactionType.SHOW_HIDE -> currentTransaction?.hide(disabledFragment)
+            TransactionType.ATTACH_DETACH -> currentTransaction?.detach(disabledFragment)
         }
 
         for (fragmentData in fragmentDataArgs) {
-            fragmentTransaction.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
+            currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
         }
 
-        fragmentTransaction.commitAllowingStateLoss()
-        executePendings()
+        commitNowAllowingStateLoss()
     }
 
     fun isFragmentNull(fragmentTag: String): Boolean {
-        return fragmentManager.findFragmentByTag(fragmentTag) == null
-    }
-
-    fun executePendings() {
-        fragmentManager.executePendingTransactions()
+        return getFragment(fragmentTag) == null
     }
 
     fun getFragment(fragmentTag: String): Fragment? {
@@ -103,5 +96,50 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         }
 
         return navigatorTransaction
+    }
+
+    fun findFragmentByTagAndRemove(fragmentTag: String) {
+        checkAndCreateTransaction()
+
+        getFragment(fragmentTag)?.let { currentTransaction?.remove(it) }
+    }
+
+    private fun commitShow(fragmentTag: String) {
+        checkAndCreateTransaction()
+
+        currentTransaction?.show(getFragment(fragmentTag))
+        commitNowAllowingStateLoss()
+    }
+
+    private fun commitAttach(fragmentTag: String) {
+        checkAndCreateTransaction()
+
+        currentTransaction?.attach(getFragment(fragmentTag))
+        commitNowAllowingStateLoss()
+    }
+
+    private fun commitHide(fragmentTag: String) {
+        checkAndCreateTransaction()
+
+        currentTransaction?.hide(getFragment(fragmentTag))
+        commitNowAllowingStateLoss()
+    }
+
+    private fun commitDetach(fragmentTag: String) {
+        checkAndCreateTransaction()
+
+        currentTransaction?.detach(getFragment(fragmentTag))
+        commitNowAllowingStateLoss()
+    }
+
+    fun commitNowAllowingStateLoss() {
+        currentTransaction?.commitNowAllowingStateLoss()
+        currentTransaction = null
+    }
+
+    private fun checkAndCreateTransaction() {
+        if (currentTransaction == null) {
+            currentTransaction = fragmentManager.beginTransaction()
+        }
     }
 }

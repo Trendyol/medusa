@@ -2,7 +2,6 @@ package com.trendyol.medusalib.navigator
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
 import com.trendyol.medusalib.common.extensions.*
 import com.trendyol.medusalib.navigator.controller.FragmentManagerController
 import com.trendyol.medusalib.navigator.data.FragmentData
@@ -139,7 +138,6 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             val upperFragmentTag = fragmentTagStack[currentTabIndex].peek().fragmentTag
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
-        fragmentManagerController.executePendings()
     }
 
     override fun reset() {
@@ -204,7 +202,6 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         currentTabIndexStack.push(initialTabIndex)
         with(fragmentManagerController) {
             addFragment(rootFragmentData)
-            executePendings()
         }
         navigatorListener?.let { it.onTabChanged(navigatorConfiguration.initialTabIndex) }
     }
@@ -220,7 +217,6 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
         } else {
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
-        fragmentManagerController.executePendings()
     }
 
     private fun getCurrentFragmentTag(): String {
@@ -237,15 +233,12 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
     }
 
     private fun clearAllFragments() {
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         for (tagStack in fragmentTagStack) {
             while (tagStack.isEmpty().not()) {
-                val currentFragment = fragmentManager.findFragmentByTag(tagStack.pop().fragmentTag)
-                currentFragment?.let { fragmentTransaction.remove(it) }
+                fragmentManagerController.findFragmentByTagAndRemove(tagStack.pop().fragmentTag)
             }
         }
-        fragmentTransaction.commit()
-        fragmentManager.executePendingTransactions()
+        fragmentManagerController.commitNowAllowingStateLoss()
     }
 
     private fun clearAllFragments(tabIndex: Int, resetRootFragment: Boolean) {
@@ -253,20 +246,16 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             return
         }
 
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-
         while (fragmentTagStack[tabIndex].empty().not()) {
             if (fragmentTagStack[tabIndex].size == 1 && resetRootFragment.not()) {
                 break
             }
 
             val fragmentTagToBeRemoved = fragmentTagStack[tabIndex].pop().fragmentTag
-            val fragmentToBeRemoved = fragmentManager.findFragmentByTag(fragmentTagToBeRemoved)
-            fragmentToBeRemoved?.let { fragmentTransaction.remove(fragmentToBeRemoved) }
+            fragmentManagerController.findFragmentByTagAndRemove(fragmentTagToBeRemoved)
         }
 
-        fragmentTransaction.commitAllowingStateLoss()
-        fragmentManager.executePendingTransactions()
+        fragmentManagerController.commitNowAllowingStateLoss()
     }
 
     private fun canFragmentGoBack(): Boolean {
