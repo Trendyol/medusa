@@ -1,6 +1,6 @@
 package com.trendyol.medusalib.navigator
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 
 interface Navigator {

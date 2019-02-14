@@ -30,13 +30,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Destroy/Restart root fragment on Reset" />
 
-                <android.support.v7.widget.SwitchCompat
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/restartSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <android.support.design.widget.BottomNavigationView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
