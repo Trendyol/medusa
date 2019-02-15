@@ -37,7 +37,7 @@ allprojects {
 ```
 ```
 dependencies {
-    implementation 'com.github.trendyol:medusa:0.4.1'
+    implementation 'com.github.trendyol:medusa:0.5.1'
 }
 ```
 
