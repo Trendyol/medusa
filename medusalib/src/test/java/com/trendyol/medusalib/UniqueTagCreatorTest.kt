@@ -1,6 +1,6 @@
 package com.trendyol.medusalib.navigator
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.trendyol.medusalib.navigator.tag.UniqueTagCreator
 import org.junit.Test
 import org.junit.Assert.*

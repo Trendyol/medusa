@@ -1,7 +1,7 @@
 package com.trendyol.medusalib.navigator
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.trendyol.medusalib.common.extensions.*
 import com.trendyol.medusalib.navigator.controller.FragmentManagerController
 import com.trendyol.medusalib.navigator.data.FragmentData
@@ -12,10 +12,10 @@ import java.lang.IllegalStateException
 import java.util.*
 
 open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
-                             private val containerId: Int,
-                             private val rootFragments: List<Fragment>,
-                             private var navigatorListener: Navigator.NavigatorListener? = null,
-                             private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration()) : Navigator {
+                                  private val containerId: Int,
+                                  private val rootFragments: List<Fragment>,
+                                  private var navigatorListener: Navigator.NavigatorListener? = null,
+                                  private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration()) : Navigator {
 
     private val tagCreator: TagCreator = UniqueTagCreator()
 

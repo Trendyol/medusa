@@ -1,6 +1,6 @@
 package com.trendyol.medusalib.navigator.tag
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 
 
 interface TagCreator {

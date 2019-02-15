@@ -2,7 +2,7 @@ package com.trendyol.medusa
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.trendyol.medusalib.navigator.MultipleStackNavigator
 
 open class BaseFragment : Fragment() {

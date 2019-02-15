@@ -1,8 +1,8 @@
 package com.trendyol.medusalib.navigator.controller
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.trendyol.medusalib.common.extensions.attach
 import com.trendyol.medusalib.common.extensions.detach
 import com.trendyol.medusalib.common.extensions.hide
