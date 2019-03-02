@@ -1,9 +1,11 @@
 package com.trendyol.medusa
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
@@ -14,8 +16,6 @@ import com.trendyol.medusalib.navigator.NavigatorConfiguration
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 
 class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
-
-    private var mTextMessage: TextView? = null
 
     lateinit var navigation: BottomNavigationView
 
@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
             navigatorListener = this,
             navigatorConfiguration = NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE))
 
-        mTextMessage = findViewById<View>(R.id.message) as TextView?
         val restartRootFragmentCheckBox = findViewById<View>(R.id.restartSwitch) as SwitchCompat
         findViewById<Button>(R.id.resetCurrentTab).setOnClickListener { multipleStackNavigator!!.resetCurrentTab(restartRootFragmentCheckBox.isChecked) }
         findViewById<Button>(R.id.resetXTab).setOnClickListener { multipleStackNavigator!!.reset(1, restartRootFragmentCheckBox.isChecked) }
@@ -85,5 +84,20 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
             1 -> navigation.selectedItemId = R.id.navigation_dashboard
             2 -> navigation.selectedItemId = R.id.navigation_notifications
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.navigation_java_sample -> {
+                startActivity(Intent(this, MainActivity2::class.java))
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -17,6 +17,8 @@ open class BaseFragment : Fragment() {
     private fun initStackNavigator(context: Context?) {
         if (context is MainActivity && multipleStackNavigator == null) {
             multipleStackNavigator = context.multipleStackNavigator
+        } else if (context is MainActivity2 && multipleStackNavigator == null) {
+            multipleStackNavigator = context.multipleStackNavigator
         }
     }
 
