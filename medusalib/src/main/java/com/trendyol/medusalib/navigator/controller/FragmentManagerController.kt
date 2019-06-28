@@ -3,11 +3,6 @@ package com.trendyol.medusalib.navigator.controller
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.trendyol.medusalib.common.extensions.attach
-import com.trendyol.medusalib.common.extensions.detach
-import com.trendyol.medusalib.common.extensions.hide
-import com.trendyol.medusalib.common.extensions.show
-import com.trendyol.medusalib.common.extensions.remove
 import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
@@ -40,7 +35,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     fun removeFragment(fragmentTag: String) {
         checkAndCreateTransaction()
         currentTransaction?.remove(getFragment(fragmentTag))
-        commitNowAllowingStateLoss()
+        commitAllowingStateLoss()
     }
 
     fun removeFragments(fragmentTagList: List<String>) {
@@ -49,14 +44,14 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         for (fragmentTag in fragmentTagList) {
             getFragment(fragmentTag)?.let { currentTransaction?.remove(it) }
         }
-        commitNowAllowingStateLoss()
+        commitAllowingStateLoss()
     }
 
     fun addFragment(fragmentData: FragmentData) {
         checkAndCreateTransaction()
 
         currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
-        commitNowAllowingStateLoss()
+        commitAllowingStateLoss()
     }
 
     fun disableAndStartFragment(disableFragmentTag: String, vararg fragmentDataArgs: FragmentData) {
@@ -75,7 +70,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
             currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
         }
 
-        commitNowAllowingStateLoss()
+        commitAllowingStateLoss()
     }
 
     fun isFragmentNull(fragmentTag: String): Boolean {
@@ -108,32 +103,32 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         checkAndCreateTransaction()
 
         currentTransaction?.show(getFragment(fragmentTag))
-        commitNowAllowingStateLoss()
+        commitAllowingStateLoss()
     }
 
     private fun commitAttach(fragmentTag: String) {
         checkAndCreateTransaction()
 
         currentTransaction?.attach(getFragment(fragmentTag))
-        commitNowAllowingStateLoss()
+        commitAllowingStateLoss()
     }
 
     private fun commitHide(fragmentTag: String) {
         checkAndCreateTransaction()
 
         currentTransaction?.hide(getFragment(fragmentTag))
-        commitNowAllowingStateLoss()
+        commitAllowingStateLoss()
     }
 
     private fun commitDetach(fragmentTag: String) {
         checkAndCreateTransaction()
 
         currentTransaction?.detach(getFragment(fragmentTag))
-        commitNowAllowingStateLoss()
+        commitAllowingStateLoss()
     }
 
-    fun commitNowAllowingStateLoss() {
-        currentTransaction?.commitNowAllowingStateLoss()
+    fun commitAllowingStateLoss() {
+        currentTransaction?.commitAllowingStateLoss()
         currentTransaction = null
     }
 

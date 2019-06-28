@@ -238,7 +238,7 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
                 fragmentManagerController.findFragmentByTagAndRemove(tagStack.pop().fragmentTag)
             }
         }
-        fragmentManagerController.commitNowAllowingStateLoss()
+        fragmentManagerController.commitAllowingStateLoss()
     }
 
     private fun clearAllFragments(tabIndex: Int, resetRootFragment: Boolean) {
@@ -255,7 +255,7 @@ open class MultipleStackNavigator(private val fragmentManager: FragmentManager,
             fragmentManagerController.findFragmentByTagAndRemove(fragmentTagToBeRemoved)
         }
 
-        fragmentManagerController.commitNowAllowingStateLoss()
+        fragmentManagerController.commitAllowingStateLoss()
     }
 
     private fun canFragmentGoBack(): Boolean {
