@@ -60,7 +60,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     }
 
     fun disableAndStartFragment(disableFragmentTag: String, vararg fragmentDataArgs: FragmentData) {
-        val disabledFragment = getFragment(disableFragmentTag)
+        val disabledFragment = getFragmentWithExecutingPendingTransactionsIfNeeded(disableFragmentTag)
 
         checkAndCreateTransaction()
 
@@ -80,6 +80,14 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
 
     fun isFragmentNull(fragmentTag: String): Boolean {
         return getFragment(fragmentTag) == null
+    }
+
+    private fun getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag: String): Fragment? {
+        var fragment = getFragment(fragmentTag)
+        if (fragment == null && fragmentManager.executePendingTransactions()) {
+            fragment = getFragment(fragmentTag)
+        }
+        return fragment
     }
 
     fun getFragment(fragmentTag: String): Fragment? {
