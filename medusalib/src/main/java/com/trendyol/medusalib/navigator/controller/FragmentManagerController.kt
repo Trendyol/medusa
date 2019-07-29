@@ -129,14 +129,14 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     private fun commitHide(fragmentTag: String) {
         checkAndCreateTransaction()
 
-        currentTransaction?.hide(getFragment(fragmentTag))
+        currentTransaction?.hide(getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag))
         commitAllowingStateLoss()
     }
 
     private fun commitDetach(fragmentTag: String) {
         checkAndCreateTransaction()
 
-        currentTransaction?.detach(getFragment(fragmentTag))
+        currentTransaction?.detach(getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag))
         commitAllowingStateLoss()
     }
 
