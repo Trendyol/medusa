@@ -1,5 +1,6 @@
 package com.trendyol.medusalib.navigator
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 
@@ -113,6 +114,23 @@ interface Navigator {
      * @return current visible fragment
      */
     fun getCurrentFragment(): Fragment?
+
+    /**
+     * Puts current fragment stack state to given bundle inorder to retain
+     * state across activity recreation and process death.
+     * @param outState outState parameter of onSaveInstanceState method in
+     * your fragments or activities
+     */
+    fun onSaveInstanceState(outState: Bundle)
+
+    /*
+    * Initializes fragment stack state and adds related root fragments to your
+    * container if savedState is null. Otherwise reads and deserialize
+    * fragment stack state from given bundle.
+    * @param outState savedInstanceState parameter of onCreate method in
+     * your fragments or activities
+    */
+    fun initialize(savedState: Bundle?)
 
     /**
      * Listeners
