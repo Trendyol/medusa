@@ -4,20 +4,22 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.trendyol.medusalib.navigator.MultipleStackNavigator;
 import com.trendyol.medusalib.navigator.Navigator;
 import com.trendyol.medusalib.navigator.NavigatorConfiguration;
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.Fragment;
+import kotlin.jvm.functions.Function0;
 
 public class MainActivity2 extends AppCompatActivity implements Navigator.NavigatorListener {
 
@@ -25,11 +27,27 @@ public class MainActivity2 extends AppCompatActivity implements Navigator.Naviga
 
     MultipleStackNavigator multipleStackNavigator;
 
-    private Fragment firstTabFragment = FragmentGenerator.generateNewFragment();
-    private Fragment secondTabFragment = FragmentGenerator.generateNewFragment();
-    private Fragment thirdTabFragment = FragmentGenerator.generateNewFragment();
-
-    private List<Fragment> rootFragmentList = new ArrayList<>();
+    private List<Function0<Fragment>> rootsFragmentProvider = Arrays
+        .asList(
+            new Function0<Fragment>() {
+                @Override
+                public Fragment invoke() {
+                    return FragmentGenerator.generateNewFragment();
+                }
+            },
+            new Function0<Fragment>() {
+                @Override
+                public Fragment invoke() {
+                    return FragmentGenerator.generateNewFragment();
+                }
+            },
+            new Function0<Fragment>() {
+                @Override
+                public Fragment invoke() {
+                    return FragmentGenerator.generateNewFragment();
+                }
+            }
+        );
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -56,17 +74,14 @@ public class MainActivity2 extends AppCompatActivity implements Navigator.Naviga
 
         navigation = findViewById(R.id.navigation);
 
-        rootFragmentList.add(firstTabFragment);
-        rootFragmentList.add(secondTabFragment);
-        rootFragmentList.add(thirdTabFragment);
-
         multipleStackNavigator = new MultipleStackNavigator(
-                getSupportFragmentManager(),
-                R.id.fragmentContainer,
-                rootFragmentList,
-                this,
-                new NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE));
+            getSupportFragmentManager(),
+            R.id.fragmentContainer,
+            rootsFragmentProvider,
+            this,
+            new NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE));
 
+        multipleStackNavigator.initialize(savedInstanceState);
         final SwitchCompat restartRootFragmentCheckBox = findViewById(R.id.restartSwitch);
         findViewById(R.id.resetCurrentTab).setOnClickListener(new View.OnClickListener() {
             @Override
