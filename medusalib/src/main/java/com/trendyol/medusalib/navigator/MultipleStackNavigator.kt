@@ -264,7 +264,6 @@ open class MultipleStackNavigator(
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        navigatorListener = null
         outState.putBundle(MEDUSA_STACK_STATE_KEY, fragmentStackStateMapper.toBundle(fragmentStackState))
     }
 
