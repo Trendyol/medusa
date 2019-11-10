@@ -16,7 +16,7 @@ open class MultipleStackNavigator(
     private val rootFragmentProvider: List<() -> Fragment>,
     private var navigatorListener: Navigator.NavigatorListener? = null,
     private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration(),
-    private val transitionAnimationType: TransitionAnimationType
+    private val transitionAnimationType: TransitionAnimationType? = null
 ) : Navigator {
 
     private val tagCreator: TagCreator = UniqueTagCreator()
@@ -52,7 +52,7 @@ open class MultipleStackNavigator(
         start(fragment, DEFAULT_GROUP_NAME, transitionAnimation)
     }
 
-    override fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType) {
+    override fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType?) {
 
         val createdTag = tagCreator.create(fragment)
         val currentTabIndex = fragmentStackState.getSelectedTabIndex()

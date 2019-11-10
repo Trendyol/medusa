@@ -56,7 +56,7 @@ interface Navigator {
      * @param transitionAnimation will be used start and remove fragment transition animation
      * all fragments which has the same group name.
      */
-    fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType)
+    fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType?)
 
     /**
      * Adds new fragment to the fragment stack with given tab index.

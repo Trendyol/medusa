@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 import kotlin.random.Random
 
 class SampleFragment : BaseFragment() {
@@ -19,7 +20,7 @@ class SampleFragment : BaseFragment() {
         view.findViewById<LinearLayout>(R.id.root).setBackgroundColor(Color.argb(255, Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)))
 
         view.findViewById<Button>(R.id.button).setOnClickListener {
-            multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment())
+            multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment(), TransitionAnimationType.RIGHT_TO_LEFT)
         }
         return view
     }
