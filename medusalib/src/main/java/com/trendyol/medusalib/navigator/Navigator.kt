@@ -47,8 +47,25 @@ interface Navigator {
      */
     fun start(fragment: Fragment, tabIndex: Int, fragmentGroupName: String)
 
+    /**
+     * Adds new fragment to the fragment stack with given tab index.
+     * Hide currently active fragment, switches to given tab Index
+     * and show newly added fragment to the user.
+     * @param fragment new fragment
+     * @param fragmentGroupName will be used in case of you want to remove
+     * @param transitionAnimation will be used start and remove fragment transition animation
+     * all fragments which has the same group name.
+     */
     fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType)
 
+    /**
+     * Adds new fragment to the fragment stack with given tab index.
+     * Hide currently active fragment, switches to given tab Index
+     * and show newly added fragment to the user.
+     * @param fragment new fragment
+     * @param transitionAnimation will be used start and remove fragment transition animation
+     * all fragments which has the same group name.
+     */
     fun start(fragment: Fragment, transitionAnimation: TransitionAnimationType)
 
     /**
