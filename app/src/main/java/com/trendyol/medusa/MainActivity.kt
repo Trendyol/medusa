@@ -15,6 +15,7 @@ import com.trendyol.medusalib.navigator.MultipleStackNavigator
 import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.NavigatorConfiguration
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
+import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
@@ -32,7 +33,8 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
             R.id.fragmentContainer,
             rootFragmentProvider,
             navigatorListener = this,
-            navigatorConfiguration = NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE))
+            navigatorConfiguration = NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE),
+            transitionAnimationType = TransitionAnimationType.BOTTOM_TO_TOP)
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
