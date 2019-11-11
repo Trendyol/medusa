@@ -15,6 +15,7 @@ import com.trendyol.medusalib.navigator.MultipleStackNavigator
 import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.NavigatorConfiguration
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
+import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
