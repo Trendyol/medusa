@@ -8,13 +8,15 @@ import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.data.StackItem
 import com.trendyol.medusalib.navigator.tag.TagCreator
 import com.trendyol.medusalib.navigator.tag.UniqueTagCreator
+import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 open class MultipleStackNavigator(
     fragmentManager: FragmentManager,
     containerId: Int,
     private val rootFragmentProvider: List<() -> Fragment>,
     private var navigatorListener: Navigator.NavigatorListener? = null,
-    private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration()
+    private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration(),
+    private val transitionAnimationType: TransitionAnimationType? = null
 ) : Navigator {
 
     private val tagCreator: TagCreator = UniqueTagCreator()
@@ -43,14 +45,23 @@ open class MultipleStackNavigator(
     }
 
     override fun start(fragment: Fragment, fragmentGroupName: String) {
+        start(fragment, fragmentGroupName, transitionAnimationType)
+    }
+
+    override fun start(fragment: Fragment, transitionAnimation: TransitionAnimationType) {
+        start(fragment, DEFAULT_GROUP_NAME, transitionAnimation)
+    }
+
+    override fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType?) {
+
         val createdTag = tagCreator.create(fragment)
         val currentTabIndex = fragmentStackState.getSelectedTabIndex()
-        val fragmentData = FragmentData(fragment, createdTag)
+        val fragmentData = FragmentData(fragment, createdTag, transitionAnimation)
 
         if (fragmentStackState.isSelectedTabEmpty()) {
             val rootFragment = getRootFragment(currentTabIndex)
             val rootFragmentTag = tagCreator.create(rootFragment)
-            val rootFragmentData = FragmentData(rootFragment, rootFragmentTag)
+            val rootFragmentData = FragmentData(rootFragment, rootFragmentTag, transitionAnimation)
             fragmentManagerController.disableAndStartFragment(
                 getCurrentFragmentTag(),
                 rootFragmentData,

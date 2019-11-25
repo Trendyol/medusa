@@ -9,7 +9,7 @@ open class BaseFragment : Fragment() {
 
     var multipleStackNavigator: MultipleStackNavigator? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         initStackNavigator(context)
     }
