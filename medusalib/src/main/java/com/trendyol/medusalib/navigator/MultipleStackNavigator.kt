@@ -184,8 +184,7 @@ open class MultipleStackNavigator(
     override fun initialize(savedState: Bundle?) {
         if (savedState == null) {
             initializeStackState()
-        }
-        else {
+        } else {
             loadStackStateFromSavedState(savedState)
         }
     }
@@ -221,7 +220,7 @@ open class MultipleStackNavigator(
 
     private fun getRootFragment(tabIndex: Int): Fragment =
         fragmentManagerController.getFragment(fragmentStackState.peekItem(tabIndex).fragmentTag)
-        ?: rootFragmentProvider.get(tabIndex).invoke()
+        ?: rootFragmentProvider[tabIndex].invoke()
 
     private fun showUpperFragment() {
         val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab().fragmentTag
