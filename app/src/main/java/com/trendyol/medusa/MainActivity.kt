@@ -1,10 +1,6 @@
 package com.trendyol.medusa
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -14,9 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.trendyol.medusalib.navigator.MultipleStackNavigator
 import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.NavigatorConfiguration
-import com.trendyol.medusalib.navigator.SingleStackNavigator
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
-import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
@@ -67,7 +61,6 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         findViewById<Button>(R.id.reset).setOnClickListener { multipleStackNavigator.reset() }
-
     }
 
     override fun onBackPressed() {
@@ -84,21 +77,6 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
             1 -> navigation.selectedItemId = R.id.navigation_dashboard
             2 -> navigation.selectedItemId = R.id.navigation_notifications
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.navigation_java_sample -> {
-                startActivity(Intent(this, MainActivity2::class.java))
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

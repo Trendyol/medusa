@@ -4,4 +4,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_multiple_stack_navigator_kotlin">MultipleStackNavigator - Kotlin</string>
+    <string name="title_multiple_stack_navigator_java">MultipleStackNavigator - Java</string>
 </resources>

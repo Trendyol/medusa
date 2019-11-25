@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".MainActivity"
+            android:name=".SamplesActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -20,8 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity"
+                  android:label="@string/title_multiple_stack_navigator_kotlin"/>
+
         <activity android:name=".MainActivity2"
-                  android:label="@string/app_name_java"/>
+                  android:label="@string/title_multiple_stack_navigator_java"/>
     </application>
 
 </manifest>
