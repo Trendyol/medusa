@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.trendyol.medusalib.navigator.transitionanimation.SharedElement
 import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 import kotlin.random.Random
 
@@ -19,9 +21,16 @@ class SampleFragment : BaseFragment() {
 
         view.findViewById<LinearLayout>(R.id.root).setBackgroundColor(Color.argb(255, Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)))
 
+        //Using for shared element transition
+        val image = view.findViewById<ImageView>(R.id.ic_android)
         view.findViewById<Button>(R.id.button).setOnClickListener {
-            multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment(), TransitionAnimationType.RIGHT_TO_LEFT)
+            multipleStackNavigator!!.start(SharedElementSampleSecondFragment.newInstance(), SharedElement(image))
         }
+
+        //Default start fragment
+        /*view.findViewById<Button>(R.id.button).setOnClickListener {
+            multipleStackNavigator!!.start(FragmentGenerator.generateNewFragment())
+        }*/
         return view
     }
 

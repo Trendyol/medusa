@@ -1,5 +1,7 @@
 package com.trendyol.medusalib.navigator.controller
 
+import android.os.Build
+import android.transition.TransitionInflater
 import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
@@ -80,24 +82,44 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         checkAndCreateTransaction()
 
         for (fragmentData in fragmentDataArgs) {
-            currentTransitionAnimationType = fragmentData.transitionAnimation
-            when (currentTransitionAnimationType) {
-                TransitionAnimationType.LEFT_TO_RIGHT -> setCustomAnimations(R.anim.enter_from_left, R.anim.empty_animation)
-                TransitionAnimationType.RIGHT_TO_LEFT -> setCustomAnimations(R.anim.enter_from_right, R.anim.empty_animation)
-                TransitionAnimationType.BOTTOM_TO_TOP -> setCustomAnimations(R.anim.enter_from_bottom, R.anim.empty_animation)
-                TransitionAnimationType.TOP_TO_BOTTOM -> setCustomAnimations(R.anim.enter_from_top, R.anim.empty_animation)
-                TransitionAnimationType.FADE_IN_OUT -> setCustomAnimations(R.anim.fade_in, R.anim.empty_animation)
+            if (hasSharedElement(fragmentData)) {
+                setSharedElementTransitionAnimation(fragmentData, disabledFragment)
+                currentTransaction?.replace(containerId, fragmentData.fragment, fragmentData.fragmentTag)
+            } else {
+                setTransitionAnimation(fragmentData)
+                currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
             }
-            currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
         }
 
         val disabledFragmentNavigatorTransaction = getFragmentNavigatorTransaction(disableFragmentTag)
+
         when (disabledFragmentNavigatorTransaction.transactionType) {
             TransactionType.SHOW_HIDE -> currentTransaction?.hide(disabledFragment)
             TransactionType.ATTACH_DETACH -> currentTransaction?.detach(disabledFragment)
         }
 
         commitAllowingStateLoss()
+    }
+
+    private fun hasSharedElement(fragmentData: FragmentData) = fragmentData.sharedElement != null
+
+    private fun setSharedElementTransitionAnimation(fragmentData: FragmentData, disabledFragment: Fragment?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val view = fragmentData.sharedElement!!.view
+            currentTransaction?.addSharedElement(view, view.transitionName)
+            fragmentData.fragment.sharedElementEnterTransition = TransitionInflater.from(disabledFragment?.context).inflateTransition(android.R.transition.move)
+        }
+    }
+
+    private fun setTransitionAnimation(fragmentData: FragmentData) {
+        currentTransitionAnimationType = fragmentData.transitionAnimation
+        when (currentTransitionAnimationType) {
+            TransitionAnimationType.LEFT_TO_RIGHT -> setCustomAnimations(R.anim.enter_from_left, R.anim.empty_animation)
+            TransitionAnimationType.RIGHT_TO_LEFT -> setCustomAnimations(R.anim.enter_from_right, R.anim.empty_animation)
+            TransitionAnimationType.BOTTOM_TO_TOP -> setCustomAnimations(R.anim.enter_from_bottom, R.anim.empty_animation)
+            TransitionAnimationType.TOP_TO_BOTTOM -> setCustomAnimations(R.anim.enter_from_top, R.anim.empty_animation)
+            TransitionAnimationType.FADE_IN_OUT -> setCustomAnimations(R.anim.fade_in, R.anim.empty_animation)
+        }
     }
 
     private fun setCustomAnimations(@AnimatorRes @AnimRes enter: Int, @AnimatorRes @AnimRes exit: Int) {

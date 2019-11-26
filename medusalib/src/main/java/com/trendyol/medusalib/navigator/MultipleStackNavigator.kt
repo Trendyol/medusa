@@ -8,6 +8,7 @@ import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.data.StackItem
 import com.trendyol.medusalib.navigator.tag.TagCreator
 import com.trendyol.medusalib.navigator.tag.UniqueTagCreator
+import com.trendyol.medusalib.navigator.transitionanimation.SharedElement
 import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 open class MultipleStackNavigator(
@@ -50,6 +51,31 @@ open class MultipleStackNavigator(
 
     override fun start(fragment: Fragment, transitionAnimation: TransitionAnimationType) {
         start(fragment, DEFAULT_GROUP_NAME, transitionAnimation)
+    }
+
+    override fun start(fragment: Fragment, sharedElement: SharedElement) {
+        val createdTag = tagCreator.create(fragment)
+        val currentTabIndex = fragmentStackState.getSelectedTabIndex()
+        val fragmentData = FragmentData(fragment = fragment, fragmentTag = createdTag, sharedElement = sharedElement)
+
+        if (fragmentStackState.isSelectedTabEmpty()) {
+            val rootFragment = getRootFragment(currentTabIndex)
+            val rootFragmentTag = tagCreator.create(rootFragment)
+            val rootFragmentData = FragmentData(rootFragment, rootFragmentTag)
+            fragmentManagerController.disableAndStartFragment(
+                getCurrentFragmentTag(),
+                rootFragmentData,
+                fragmentData
+            )
+        } else {
+            fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragmentData)
+        }
+        fragmentStackState.addStackItemToSelectedTab(
+            StackItem(
+                fragmentTag = createdTag,
+                groupName = DEFAULT_GROUP_NAME
+            )
+        )
     }
 
     override fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType?) {
@@ -184,8 +210,7 @@ open class MultipleStackNavigator(
     override fun initialize(savedState: Bundle?) {
         if (savedState == null) {
             initializeStackState()
-        }
-        else {
+        } else {
             loadStackStateFromSavedState(savedState)
         }
     }
@@ -221,7 +246,7 @@ open class MultipleStackNavigator(
 
     private fun getRootFragment(tabIndex: Int): Fragment =
         fragmentManagerController.getFragment(fragmentStackState.peekItem(tabIndex).fragmentTag)
-        ?: rootFragmentProvider.get(tabIndex).invoke()
+            ?: rootFragmentProvider.get(tabIndex).invoke()
 
     private fun showUpperFragment() {
         val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab().fragmentTag
