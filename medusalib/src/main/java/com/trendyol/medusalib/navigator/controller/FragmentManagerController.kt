@@ -87,7 +87,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
                 currentTransaction?.replace(containerId, fragmentData.fragment, fragmentData.fragmentTag)
             } else {
                 setTransitionAnimation(fragmentData)
-                currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
+                currentTransaction?.replace(containerId, fragmentData.fragment, fragmentData.fragmentTag)
             }
         }
 
