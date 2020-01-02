@@ -60,7 +60,10 @@ data class FragmentStackState constructor(
     }
 
     fun popItemsFromNonEmptyTabs(): List<StackItem> {
-        return fragmentTagStack.filter { it.isNotEmpty() }.map { it.pop() }
+        return fragmentTagStack
+            .filter { it.isNotEmpty() }
+            .flatMap { stackItem -> stackItem.map { it } }
+            .also { fragmentTagStack.clear() }
     }
 
     fun insertTabToBottom(tabIndex: Int) {

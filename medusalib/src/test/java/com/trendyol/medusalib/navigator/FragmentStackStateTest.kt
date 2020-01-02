@@ -17,7 +17,7 @@ class FragmentStackStateTest {
 
         val actualPoppedItems = stackState.popItemsFromNonEmptyTabs()
 
-        Truth.assertThat(actualPoppedItems).containsExactly(expectedStackItems)
+        Truth.assertThat(actualPoppedItems).containsExactlyElementsIn(expectedStackItems)
     }
 
     @Test
@@ -27,6 +27,6 @@ class FragmentStackStateTest {
 
         stackState.popItemsFromNonEmptyTabs()
 
-        Truth.assertThat(stackState.fragmentTagStack).containsExactly(emptyStack)
+        Truth.assertThat(stackState.fragmentTagStack).containsExactlyElementsIn(emptyStack)
     }
 }
