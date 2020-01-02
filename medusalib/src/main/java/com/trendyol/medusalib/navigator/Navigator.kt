@@ -117,6 +117,12 @@ interface Navigator {
     fun reset()
 
     /**
+     * Resets all tabs and Navigator history and
+     * creates a new one with given fragment provider.
+     */
+    fun resetWithFragmentProvider(rootFragmentProvider: List<() -> Fragment>)
+
+    /**
      * Clears all fragments with given group name in the
      * current tab. This method aims to clear all
      * related/steps fragments from tab.

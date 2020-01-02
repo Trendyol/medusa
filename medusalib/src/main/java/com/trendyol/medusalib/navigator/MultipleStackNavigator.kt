@@ -13,7 +13,7 @@ import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationT
 open class MultipleStackNavigator(
     fragmentManager: FragmentManager,
     containerId: Int,
-    private val rootFragmentProvider: List<() -> Fragment>,
+    private var rootFragmentProvider: List<() -> Fragment>,
     private var navigatorListener: Navigator.NavigatorListener? = null,
     private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration(),
     private val transitionAnimationType: TransitionAnimationType? = null
@@ -156,6 +156,11 @@ open class MultipleStackNavigator(
         clearAllFragments()
         fragmentStackState.clear()
         initializeStackState()
+    }
+
+    override fun resetWithFragmentProvider(rootFragmentProvider: List<() -> Fragment>) {
+        this.rootFragmentProvider = rootFragmentProvider
+        reset()
     }
 
     override fun clearGroup(fragmentGroupName: String) {
