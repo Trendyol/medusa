@@ -4,6 +4,7 @@ import com.google.common.truth.Truth
 import com.trendyol.medusalib.navigator.data.StackItem
 import org.junit.Assert.*
 import org.junit.Test
+import java.util.*
 
 class FragmentStackStateTest {
 
@@ -17,5 +18,15 @@ class FragmentStackStateTest {
         val actualPoppedItems = stackState.popItemsFromNonEmptyTabs()
 
         Truth.assertThat(actualPoppedItems).containsExactly(expectedStackItems)
+    }
+
+    @Test
+    fun `popItemsFromNonEmptyTabs clears stack item in given stack`() {
+        val stackState = buildFragmentStackState()
+        val emptyStack = emptyList<Stack<StackItem>>()
+
+        stackState.popItemsFromNonEmptyTabs()
+
+        Truth.assertThat(stackState.fragmentTagStack).containsExactly(emptyStack)
     }
 }
