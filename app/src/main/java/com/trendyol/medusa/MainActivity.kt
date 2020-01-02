@@ -2,7 +2,6 @@ package com.trendyol.medusa
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,7 +14,6 @@ import com.trendyol.medusalib.navigator.MultipleStackNavigator
 import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.NavigatorConfiguration
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
-import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
@@ -25,6 +23,12 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
         { FragmentGenerator.generateNewFragment() },
         { FragmentGenerator.generateNewFragment() },
         { FragmentGenerator.generateNewFragment() }
+    )
+
+    private val newListOfFragments: List<() -> Fragment> = listOf(
+        { FragmentGenerator.generateBrandNewFragments() },
+        { FragmentGenerator.generateBrandNewFragments() },
+        { FragmentGenerator.generateBrandNewFragments() }
     )
 
     val multipleStackNavigator: MultipleStackNavigator =
@@ -66,6 +70,10 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         findViewById<Button>(R.id.reset).setOnClickListener { multipleStackNavigator.reset() }
+        findViewById<Button>(R.id.resetWithNewSet).setOnClickListener {
+            multipleStackNavigator.resetWithFragmentProvider(newListOfFragments)
+        }
+
     }
 
     override fun onBackPressed() {
