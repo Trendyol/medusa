@@ -13,5 +13,11 @@ class FragmentGenerator {
             fragmentNumber++
             return SampleFragment.newInstance("fragment $fragmentNumber")
         }
+
+        @JvmStatic
+        fun generateBrandNewFragments(): Fragment {
+            fragmentNumber++
+            return SampleFragment.newInstance("brand new fragment $fragmentNumber")
+        }
     }
 }

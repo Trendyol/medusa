@@ -66,7 +66,10 @@
                     android:layout_weight="1"
                     android:singleLine="true"
                     android:text="Reset Current Tab" />
-
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <Button
                     android:id="@+id/resetXTab"
                     android:layout_width="0dp"
@@ -75,8 +78,14 @@
                     android:singleLine="true"
                     android:text="Reset X Tab" />
 
+                <Button
+                    android:id="@+id/resetWithNewSet"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="Reset With New Fragments" />
             </LinearLayout>
-
         </LinearLayout>
     </RelativeLayout>
 

@@ -135,7 +135,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     fun findFragmentByTagAndRemove(fragmentTag: String) {
         checkAndCreateTransaction()
 
-        getFragment(fragmentTag)?.let { currentTransaction?.remove(it) }
+        getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag)?.let { currentTransaction?.remove(it) }
     }
 
     private fun commitShow(fragmentTag: String) {
