@@ -3,6 +3,7 @@ package com.trendyol.medusalib.navigator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
+import com.trendyol.medusalib.navigator.transitionanimation.SharedElement
 import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 interface Navigator {
@@ -67,6 +68,16 @@ interface Navigator {
      * all fragments which has the same group name.
      */
     fun start(fragment: Fragment, transitionAnimation: TransitionAnimationType)
+
+    /**
+     * Adds new fragment to the fragment stack with given tab index.
+     * Hide currently active fragment, switches to given tab Index
+     * and show newly added fragment to the user.
+     * @param fragment new fragment
+     * @param sharedElement will be used start fragment shared element transition animation
+     * all fragments which has the same group name.
+     */
+    fun start(fragment: Fragment, sharedElement: SharedElement)
 
     /**
      * Modifies fragment stack. Pops current fragment from

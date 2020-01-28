@@ -37,7 +37,8 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
             R.id.fragmentContainer,
             rootFragmentProvider,
             navigatorListener = this,
-            navigatorConfiguration = NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE))
+            navigatorConfiguration = NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE),
+            transitionAnimationType = TransitionAnimationType.RIGHT_TO_LEFT)
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {

@@ -22,4 +22,12 @@
             android:layout_height="wrap_content"
             android:text="start another"/>
 
+    <ImageView
+        android:layout_marginTop="200dp"
+        android:id="@+id/ic_android"
+        android:transitionName="logoTransitionName"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@android:mipmap/sym_def_app_icon" />
+
     </LinearLayout>

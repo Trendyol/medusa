@@ -81,7 +81,7 @@ public class MainActivity2 extends AppCompatActivity implements Navigator.Naviga
                 rootsFragmentProvider,
                 this,
                 new NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE),
-                null);
+                TransitionAnimationType.RIGHT_TO_LEFT);
 
         multipleStackNavigator.initialize(savedInstanceState);
         final SwitchCompat restartRootFragmentCheckBox = findViewById(R.id.restartSwitch);
