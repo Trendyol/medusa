@@ -24,6 +24,7 @@ data class FragmentStackState constructor(
             }
         }
         stack.push(stackItem)
+        switchTab(tabIndex)
     }
 
     fun addStackItemToSelectedTab(stackItem: StackItem) {
