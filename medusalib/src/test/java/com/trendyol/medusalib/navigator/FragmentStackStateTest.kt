@@ -2,7 +2,6 @@ package com.trendyol.medusalib.navigator
 
 import com.google.common.truth.Truth
 import com.trendyol.medusalib.navigator.data.StackItem
-import org.junit.Assert.*
 import org.junit.Test
 import java.util.*
 
