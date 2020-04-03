@@ -1,8 +1,11 @@
 package com.trendyol.medusalib.navigator.controller
 
+import androidx.annotation.AnimRes
+import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.trendyol.medusalib.R
 import com.trendyol.medusalib.common.extensions.attach
 import com.trendyol.medusalib.common.extensions.detach
 import com.trendyol.medusalib.common.extensions.hide
@@ -12,12 +15,15 @@ import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 import com.trendyol.medusalib.navigator.transaction.TransactionType
+import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 class FragmentManagerController(private val fragmentManager: FragmentManager,
                                 private val containerId: Int,
                                 private val navigatorTransaction: NavigatorTransaction) {
 
     private var currentTransaction: FragmentTransaction? = null
+
+    private var currentTransitionAnimationType: TransitionAnimationType? = null
 
     fun enableFragment(fragmentTag: String) {
         val navigatorTransaction = getFragmentNavigatorTransaction(fragmentTag)
@@ -39,6 +45,15 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
 
     fun removeFragment(fragmentTag: String) {
         checkAndCreateTransaction()
+
+        when (currentTransitionAnimationType) {
+            TransitionAnimationType.LEFT_TO_RIGHT -> setCustomAnimations(R.anim.empty_animation, R.anim.exit_to_left)
+            TransitionAnimationType.RIGHT_TO_LEFT -> setCustomAnimations(R.anim.empty_animation, R.anim.exit_to_right)
+            TransitionAnimationType.BOTTOM_TO_TOP -> setCustomAnimations(R.anim.empty_animation, R.anim.exit_to_bottom)
+            TransitionAnimationType.TOP_TO_BOTTOM -> setCustomAnimations(R.anim.empty_animation, R.anim.exit_to_top)
+            TransitionAnimationType.FADE_IN_OUT -> setCustomAnimations(R.anim.empty_animation, R.anim.fade_out)
+        }
+
         currentTransaction?.remove(getFragment(fragmentTag))
         commitAllowingStateLoss()
     }
@@ -64,18 +79,29 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
 
         checkAndCreateTransaction()
 
-        val disabledFragmentNavigatorTransaction = getFragmentNavigatorTransaction(disableFragmentTag)
+        for (fragmentData in fragmentDataArgs) {
+            currentTransitionAnimationType = fragmentData.transitionAnimation
+            when (currentTransitionAnimationType) {
+                TransitionAnimationType.LEFT_TO_RIGHT -> setCustomAnimations(R.anim.enter_from_left, R.anim.empty_animation)
+                TransitionAnimationType.RIGHT_TO_LEFT -> setCustomAnimations(R.anim.enter_from_right, R.anim.empty_animation)
+                TransitionAnimationType.BOTTOM_TO_TOP -> setCustomAnimations(R.anim.enter_from_bottom, R.anim.empty_animation)
+                TransitionAnimationType.TOP_TO_BOTTOM -> setCustomAnimations(R.anim.enter_from_top, R.anim.empty_animation)
+                TransitionAnimationType.FADE_IN_OUT -> setCustomAnimations(R.anim.fade_in, R.anim.empty_animation)
+            }
+            currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
+        }
 
+        val disabledFragmentNavigatorTransaction = getFragmentNavigatorTransaction(disableFragmentTag)
         when (disabledFragmentNavigatorTransaction.transactionType) {
             TransactionType.SHOW_HIDE -> currentTransaction?.hide(disabledFragment)
             TransactionType.ATTACH_DETACH -> currentTransaction?.detach(disabledFragment)
         }
 
-        for (fragmentData in fragmentDataArgs) {
-            currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
-        }
-
         commitAllowingStateLoss()
+    }
+
+    private fun setCustomAnimations(@AnimatorRes @AnimRes enter: Int, @AnimatorRes @AnimRes exit: Int) {
+        currentTransaction?.setCustomAnimations(enter, exit)
     }
 
     fun isFragmentNull(fragmentTag: String): Boolean {
@@ -109,7 +135,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     fun findFragmentByTagAndRemove(fragmentTag: String) {
         checkAndCreateTransaction()
 
-        getFragment(fragmentTag)?.let { currentTransaction?.remove(it) }
+        getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag)?.let { currentTransaction?.remove(it) }
     }
 
     private fun commitShow(fragmentTag: String) {

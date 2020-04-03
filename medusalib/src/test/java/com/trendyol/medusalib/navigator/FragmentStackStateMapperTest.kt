@@ -19,5 +19,4 @@ class FragmentStackStateMapperTest {
         assertEquals(fragmentStackState, unserializedFragmentStackState)
     }
 
-
 }
