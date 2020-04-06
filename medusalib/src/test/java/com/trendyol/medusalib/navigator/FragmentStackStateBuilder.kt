@@ -1,7 +1,7 @@
 package com.trendyol.medusalib.navigator
 
 import com.trendyol.medusalib.navigator.data.StackItem
-import java.util.*
+import java.util.Stack
 
 fun buildFragmentStackState(
     tabStack: Stack<Int> = buildTabStack(), vararg fragmentStacks: Stack<StackItem> =
