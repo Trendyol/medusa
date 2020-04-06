@@ -144,7 +144,7 @@ open class MultipleStackNavigator(
             val rootFragment = getRootFragment(currentTabIndex)
             val createdTag = tagCreator.create(rootFragment)
             val rootFragmentData = FragmentData(rootFragment, createdTag)
-            fragmentStackState.addStackItemToSelectedTab(StackItem(fragmentTag = createdTag))
+            fragmentStackState.addStackItem(currentTabIndex, StackItem(fragmentTag = createdTag))
             fragmentManagerController.addFragment(rootFragmentData)
         } else {
             val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab().fragmentTag
@@ -224,9 +224,12 @@ open class MultipleStackNavigator(
         navigatorListener?.onTabChanged(fragmentStackState.getSelectedTabIndex())
     }
 
-    private fun getRootFragment(tabIndex: Int): Fragment =
-        fragmentManagerController.getFragment(fragmentStackState.peekItem(tabIndex).fragmentTag)
-        ?: rootFragmentProvider.get(tabIndex).invoke()
+    private fun getRootFragment(tabIndex: Int): Fragment {
+        return tabIndex
+            .takeUnless { fragmentStackState.isTabEmpty(it) }
+            ?.let { fragmentManagerController.getFragment(fragmentStackState.peekItem(it).fragmentTag) }
+            ?: rootFragmentProvider[tabIndex].invoke()
+    }
 
     private fun showUpperFragment() {
         val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab().fragmentTag
