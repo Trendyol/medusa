@@ -70,7 +70,7 @@ open class MultipleStackNavigator(
         } else {
             fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragmentData)
         }
-        fragmentStackState.addStackItemToSelectedTab(
+        fragmentStackState.notifyStackItemAddToCurrentTab(
             StackItem(
                 fragmentTag = createdTag,
                 groupName = fragmentGroupName
@@ -128,12 +128,6 @@ open class MultipleStackNavigator(
         }
 
         clearAllFragments(tabIndex, resetRootFragment)
-
-        if (resetRootFragment) {
-            val rootFragment = getRootFragment(tabIndex)
-            val createdTag = tagCreator.create(rootFragment)
-            fragmentStackState.addStackItem(tabIndex, StackItem(createdTag))
-        }
     }
 
     override fun resetCurrentTab(resetRootFragment: Boolean) {
@@ -144,10 +138,11 @@ open class MultipleStackNavigator(
             val rootFragment = getRootFragment(currentTabIndex)
             val createdTag = tagCreator.create(rootFragment)
             val rootFragmentData = FragmentData(rootFragment, createdTag)
-            fragmentStackState.addStackItem(currentTabIndex, StackItem(fragmentTag = createdTag))
+            fragmentStackState.switchTab(currentTabIndex)
+            fragmentStackState.notifyStackItemAdd(currentTabIndex, StackItem(fragmentTag = createdTag))
             fragmentManagerController.addFragment(rootFragmentData)
         } else {
-            val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab().fragmentTag
+            val upperFragmentTag = getCurrentFragmentTag()
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
     }
@@ -182,7 +177,7 @@ open class MultipleStackNavigator(
     }
 
     override fun getCurrentFragment(): Fragment? {
-        val visibleFragmentTag = fragmentStackState.peekItemFromSelectedTab().fragmentTag
+        val visibleFragmentTag = getCurrentFragmentTag()
         return fragmentManagerController.getFragment(visibleFragmentTag)
     }
 
@@ -196,26 +191,19 @@ open class MultipleStackNavigator(
     }
 
     private fun initializeStackState() {
-        val providedRootFragments = rootFragmentProvider.map { it.invoke() }
-        addRootFragmentsToStackState(providedRootFragments)
-
         val initialTabIndex = navigatorConfiguration.initialTabIndex
+        val rootFragment = rootFragmentProvider.get(initialTabIndex).invoke()
+        val createdTag = tagCreator.create(rootFragment)
+        val stackItem = StackItem(fragmentTag = createdTag)
+
+        fragmentStackState.setStackCount(rootFragmentProvider.size)
+        fragmentStackState.notifyStackItemAdd(tabIndex = initialTabIndex, stackItem = stackItem)
         fragmentStackState.switchTab(initialTabIndex)
 
-
-        val rootFragment = getRootFragment(initialTabIndex)
         val rootFragmentTag = fragmentStackState.peekItem(initialTabIndex).fragmentTag
         val rootFragmentData = FragmentData(rootFragment, rootFragmentTag)
         fragmentManagerController.addFragment(rootFragmentData)
         navigatorListener?.onTabChanged(navigatorConfiguration.initialTabIndex)
-    }
-
-    private fun addRootFragmentsToStackState(rootFragments: List<Fragment>) {
-        rootFragments.forEachIndexed { index: Int, fragment: Fragment ->
-            val createdTag = tagCreator.create(fragment)
-            val stackItem = StackItem(fragmentTag = createdTag)
-            fragmentStackState.addStackItem(index, stackItem)
-        }
     }
 
     private fun loadStackStateFromSavedState(savedState: Bundle) {
@@ -232,17 +220,19 @@ open class MultipleStackNavigator(
     }
 
     private fun showUpperFragment() {
-        val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab().fragmentTag
-        if (fragmentManagerController.isFragmentNull(upperFragmentTag)) {
+        val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab()?.fragmentTag
+        if (upperFragmentTag == null || fragmentManagerController.isFragmentNull(upperFragmentTag)) {
             val rootFragment = getRootFragment(fragmentStackState.getSelectedTabIndex())
-            val rootFragmentData = FragmentData(rootFragment, upperFragmentTag)
+            val createdTag = tagCreator.create(rootFragment)
+            val rootFragmentData = FragmentData(rootFragment, createdTag)
+            fragmentStackState.notifyStackItemAdd(fragmentStackState.getSelectedTabIndex(), StackItem(createdTag))
             fragmentManagerController.addFragment(rootFragmentData)
         } else {
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
     }
 
-    private fun getCurrentFragmentTag() = fragmentStackState.peekItemFromSelectedTab().fragmentTag
+    private fun getCurrentFragmentTag() = requireNotNull(fragmentStackState.peekItemFromSelectedTab()).fragmentTag
 
     private fun shouldExit(): Boolean {
         return fragmentStackState.hasTabStack() && fragmentStackState.hasSelectedTabOnlyRoot()

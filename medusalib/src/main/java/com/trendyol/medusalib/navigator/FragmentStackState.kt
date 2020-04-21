@@ -4,10 +4,9 @@ import com.trendyol.medusalib.common.extensions.insertToBottom
 import com.trendyol.medusalib.common.extensions.moveToTop
 import com.trendyol.medusalib.navigator.data.StackItem
 import java.util.*
-import kotlin.collections.ArrayList
 
 data class FragmentStackState constructor(
-    val fragmentTagStack: MutableList<Stack<StackItem>> = ArrayList(),
+    val fragmentTagStack: MutableList<Stack<StackItem>> = mutableListOf(),
     val tabIndexStack: Stack<Int> = Stack()
 ) {
 
@@ -17,18 +16,19 @@ data class FragmentStackState constructor(
 
     fun isTabEmpty(index: Int) = fragmentTagStack[index].isEmpty()
 
-    fun addStackItem(tabIndex: Int, stackItem: StackItem) {
-        val stack = fragmentTagStack.getOrElse(tabIndex) {
-            Stack<StackItem>().apply {
-                fragmentTagStack.add(tabIndex, this)
-            }
-        }
+    fun notifyStackItemAdd(tabIndex: Int, stackItem: StackItem) {
+        val stack = fragmentTagStack.get(tabIndex)
         stack.push(stackItem)
-        switchTab(tabIndex)
     }
 
-    fun addStackItemToSelectedTab(stackItem: StackItem) {
-        addStackItem(getSelectedTabIndex(), stackItem)
+    fun notifyStackItemAddToCurrentTab(stackItem: StackItem) {
+        notifyStackItemAdd(getSelectedTabIndex(), stackItem)
+    }
+
+    fun setStackCount(size: Int) {
+        for (index in 0 until size) {
+            fragmentTagStack.add(Stack())
+        }
     }
 
     fun clear() {
@@ -50,11 +50,12 @@ data class FragmentStackState constructor(
 
     fun hasSelectedTabOnlyRoot() = fragmentTagStack[getSelectedTabIndex()].size <= 1
 
-    fun peekItemFromSelectedTab() = fragmentTagStack[getSelectedTabIndex()].peek()
+    fun peekItemFromSelectedTab() =
+        fragmentTagStack[getSelectedTabIndex()].takeIf { it.isNotEmpty() }?.peek()
 
     fun popItem(tabIndex: Int): StackItem {
         val item = fragmentTagStack.get(tabIndex).pop()
-        if(fragmentTagStack.get(tabIndex).isEmpty()) {
+        if (isTabEmpty(tabIndex) && tabIndex == getSelectedTabIndex() && tabIndexStack.size > 1 ) {
             popSelectedTab()
         }
         return item
@@ -100,10 +101,6 @@ data class FragmentStackState constructor(
     fun setStackState(stackState: FragmentStackState) {
         fragmentTagStack.addAll(stackState.fragmentTagStack)
         tabIndexStack.addAll(stackState.tabIndexStack)
-    }
-
-    fun peekRootItems(): List<StackItem> {
-        return fragmentTagStack.map { it.get(0) }
     }
 
     fun peekItem(tabIndex: Int) = fragmentTagStack.get(tabIndex).peek()
