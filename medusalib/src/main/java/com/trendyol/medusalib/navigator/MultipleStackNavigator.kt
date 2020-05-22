@@ -221,7 +221,9 @@ open class MultipleStackNavigator(
     private fun loadStackStateFromSavedState(savedState: Bundle) {
         val stackState = fragmentStackStateMapper.fromBundle(savedState.getBundle(MEDUSA_STACK_STATE_KEY))
         fragmentStackState.setStackState(stackState)
-        navigatorListener?.onTabChanged(fragmentStackState.getSelectedTabIndex())
+        if (stackState.tabIndexStack.isNotEmpty()) {
+            navigatorListener?.onTabChanged(fragmentStackState.getSelectedTabIndex())
+        }
     }
 
     private fun getRootFragment(tabIndex: Int): Fragment {
