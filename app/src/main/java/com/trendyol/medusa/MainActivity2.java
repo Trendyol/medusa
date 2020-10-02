@@ -15,7 +15,8 @@ import com.trendyol.medusalib.navigator.MultipleStackNavigator;
 import com.trendyol.medusalib.navigator.Navigator;
 import com.trendyol.medusalib.navigator.NavigatorConfiguration;
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction;
-import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -130,4 +131,7 @@ public class MainActivity2 extends AppCompatActivity implements Navigator.Naviga
                 break;
         }
     }
+
+    @Override
+    public void onDestinationChanged(@NotNull Fragment fragment) {}
 }

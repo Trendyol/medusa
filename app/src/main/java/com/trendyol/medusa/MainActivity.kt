@@ -92,6 +92,8 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
         }
     }
 
+    override fun onDestinationChanged(fragment: Fragment) {}
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true

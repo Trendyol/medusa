@@ -174,6 +174,15 @@ interface Navigator {
          * can use tabIndex parameter to update navigation UI
          */
         fun onTabChanged(tabIndex: Int)
+
+        /**
+         * Called when user pressed to the back button or
+         * started new fragment on stack.
+         *
+         * @param fragment is passed from navigator library and client
+         * can use fragment parameter as wished.
+         */
+        fun onDestinationChanged(fragment: Fragment)
     }
 
     interface OnGoBackListener {

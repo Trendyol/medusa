@@ -32,24 +32,29 @@ open class MultipleStackNavigator(
 
     override fun start(fragment: Fragment) {
         start(fragment, DEFAULT_GROUP_NAME)
+        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, tabIndex: Int) {
         start(fragment, tabIndex, DEFAULT_GROUP_NAME)
+        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, tabIndex: Int, fragmentGroupName: String) {
         switchTab(tabIndex)
         start(fragment, fragmentGroupName)
         navigatorListener?.onTabChanged(tabIndex)
+        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, fragmentGroupName: String) {
         start(fragment, fragmentGroupName, transitionAnimationType)
+        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, transitionAnimation: TransitionAnimationType) {
         start(fragment, DEFAULT_GROUP_NAME, transitionAnimation)
+        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType?) {
@@ -89,7 +94,6 @@ open class MultipleStackNavigator(
             fragmentStackState.insertTabToBottom(navigatorConfiguration.initialTabIndex)
         }
 
-
         if (fragmentStackState.hasSelectedTabOnlyRoot()) {
             fragmentManagerController.disableFragment(getCurrentFragmentTag())
             fragmentStackState.popSelectedTab()
@@ -128,6 +132,7 @@ open class MultipleStackNavigator(
         }
 
         clearAllFragments(tabIndex, resetRootFragment)
+        fragmentManagerController.getFragment(getCurrentFragmentTag())?.let { navigatorListener?.onDestinationChanged(it) }
     }
 
     override fun resetCurrentTab(resetRootFragment: Boolean) {
@@ -141,9 +146,11 @@ open class MultipleStackNavigator(
             fragmentStackState.switchTab(currentTabIndex)
             fragmentStackState.notifyStackItemAdd(currentTabIndex, StackItem(fragmentTag = createdTag))
             fragmentManagerController.addFragment(rootFragmentData)
+            navigatorListener?.onDestinationChanged(rootFragmentData.fragment)
         } else {
             val upperFragmentTag = getCurrentFragmentTag()
             fragmentManagerController.enableFragment(upperFragmentTag)
+            fragmentManagerController.getFragment(upperFragmentTag)?.let { navigatorListener?.onDestinationChanged(it) }
         }
     }
 
@@ -204,6 +211,7 @@ open class MultipleStackNavigator(
         val rootFragmentData = FragmentData(rootFragment, rootFragmentTag)
         fragmentManagerController.addFragment(rootFragmentData)
         navigatorListener?.onTabChanged(navigatorConfiguration.initialTabIndex)
+        navigatorListener?.onDestinationChanged(rootFragment)
     }
 
     private fun loadStackStateFromSavedState(savedState: Bundle) {
@@ -229,8 +237,10 @@ open class MultipleStackNavigator(
             val rootFragmentData = FragmentData(rootFragment, createdTag)
             fragmentStackState.notifyStackItemAdd(fragmentStackState.getSelectedTabIndex(), StackItem(createdTag))
             fragmentManagerController.addFragment(rootFragmentData)
+            navigatorListener?.onDestinationChanged(rootFragmentData.fragment)
         } else {
             fragmentManagerController.enableFragment(upperFragmentTag)
+            fragmentManagerController.getFragment(getCurrentFragmentTag())?.let { navigatorListener?.onDestinationChanged(it) }
         }
     }
 
