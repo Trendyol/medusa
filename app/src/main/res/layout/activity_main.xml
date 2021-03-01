@@ -16,8 +16,8 @@
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/linearLayout" />
+            android:layout_below="@+id/linearLayout"
+            android:layout_alignParentBottom="true" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -76,6 +76,12 @@
                     android:text="Reset X Tab" />
 
             </LinearLayout>
+
+            <Button
+                android:id="@+id/resetXTabXFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reset X Tab X Fragment" />
 
         </LinearLayout>
     </RelativeLayout>
