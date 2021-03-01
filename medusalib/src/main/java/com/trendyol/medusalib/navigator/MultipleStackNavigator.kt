@@ -11,20 +11,20 @@ import com.trendyol.medusalib.navigator.tag.UniqueTagCreator
 import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 open class MultipleStackNavigator(
-    fragmentManager: FragmentManager,
-    containerId: Int,
-    private val rootFragmentProvider: List<() -> Fragment>,
-    private var navigatorListener: Navigator.NavigatorListener? = null,
-    private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration(),
-    private val transitionAnimationType: TransitionAnimationType? = null
+        fragmentManager: FragmentManager,
+        containerId: Int,
+        private val rootFragmentProvider: List<() -> Fragment>,
+        private var navigatorListener: Navigator.NavigatorListener? = null,
+        private val navigatorConfiguration: NavigatorConfiguration = NavigatorConfiguration(),
+        private val transitionAnimationType: TransitionAnimationType? = null
 ) : Navigator {
 
     private val tagCreator: TagCreator = UniqueTagCreator()
 
     private val fragmentManagerController = FragmentManagerController(
-        fragmentManager,
-        containerId,
-        navigatorConfiguration.defaultNavigatorTransaction
+            fragmentManager,
+            containerId,
+            navigatorConfiguration.defaultNavigatorTransaction
     )
 
     private val fragmentStackStateMapper = FragmentStackStateMapper()
@@ -63,18 +63,18 @@ open class MultipleStackNavigator(
             val rootFragmentTag = tagCreator.create(rootFragment)
             val rootFragmentData = FragmentData(rootFragment, rootFragmentTag, transitionAnimation)
             fragmentManagerController.disableAndStartFragment(
-                getCurrentFragmentTag(),
-                rootFragmentData,
-                fragmentData
+                    getCurrentFragmentTag(),
+                    rootFragmentData,
+                    fragmentData
             )
         } else {
             fragmentManagerController.disableAndStartFragment(getCurrentFragmentTag(), fragmentData)
         }
         fragmentStackState.addStackItemToSelectedTab(
-            StackItem(
-                fragmentTag = createdTag,
-                groupName = fragmentGroupName
-            )
+                StackItem(
+                        fragmentTag = createdTag,
+                        groupName = fragmentGroupName
+                )
         )
     }
 
@@ -158,13 +158,26 @@ open class MultipleStackNavigator(
         initializeStackState()
     }
 
+    override fun reset(tabIndex: Int, fragmentStackIndex: Int) {
+        val fragmentTagStack = fragmentStackState.fragmentTagStack[tabIndex]
+        val stackSize = fragmentTagStack.size - 1
+        if (stackSize > fragmentStackIndex) {
+            (stackSize downTo fragmentStackIndex + 1).forEach { position ->
+                fragmentManagerController.findFragmentByTagAndRemove(fragmentTagStack[position].fragmentTag)
+                fragmentTagStack.pop()
+            }
+            fragmentManagerController.commitAllowingStateLoss()
+            fragmentManagerController.enableFragment(getCurrentFragmentTag())
+        }
+    }
+
     override fun clearGroup(fragmentGroupName: String) {
         if (fragmentGroupName == DEFAULT_GROUP_NAME) {
             throw IllegalArgumentException("Fragment group name can not be empty.")
         }
         val poppedFragmentTags = fragmentStackState
-            .popItems(fragmentGroupName)
-            .map { it.fragmentTag }
+                .popItems(fragmentGroupName)
+                .map { it.fragmentTag }
 
         if (poppedFragmentTags.isNotEmpty()) {
             fragmentManagerController.removeFragments(poppedFragmentTags)
@@ -184,8 +197,7 @@ open class MultipleStackNavigator(
     override fun initialize(savedState: Bundle?) {
         if (savedState == null) {
             initializeStackState()
-        }
-        else {
+        } else {
             loadStackStateFromSavedState(savedState)
         }
     }
@@ -220,8 +232,8 @@ open class MultipleStackNavigator(
     }
 
     private fun getRootFragment(tabIndex: Int): Fragment =
-        fragmentManagerController.getFragment(fragmentStackState.peekItem(tabIndex).fragmentTag)
-        ?: rootFragmentProvider.get(tabIndex).invoke()
+            fragmentManagerController.getFragment(fragmentStackState.peekItem(tabIndex).fragmentTag)
+                    ?: rootFragmentProvider.get(tabIndex).invoke()
 
     private fun showUpperFragment() {
         val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab().fragmentTag

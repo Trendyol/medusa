@@ -2,7 +2,6 @@ package com.trendyol.medusa
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,25 +14,24 @@ import com.trendyol.medusalib.navigator.MultipleStackNavigator
 import com.trendyol.medusalib.navigator.Navigator
 import com.trendyol.medusalib.navigator.NavigatorConfiguration
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
-import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
 class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
     lateinit var navigation: BottomNavigationView
 
     private val rootFragmentProvider: List<() -> Fragment> = listOf(
-        { FragmentGenerator.generateNewFragment() },
-        { FragmentGenerator.generateNewFragment() },
-        { FragmentGenerator.generateNewFragment() }
+            { FragmentGenerator.generateNewFragment() },
+            { FragmentGenerator.generateNewFragment() },
+            { FragmentGenerator.generateNewFragment() }
     )
 
     val multipleStackNavigator: MultipleStackNavigator =
-        MultipleStackNavigator(
-            supportFragmentManager,
-            R.id.fragmentContainer,
-            rootFragmentProvider,
-            navigatorListener = this,
-            navigatorConfiguration = NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE))
+            MultipleStackNavigator(
+                    supportFragmentManager,
+                    R.id.fragmentContainer,
+                    rootFragmentProvider,
+                    navigatorListener = this,
+                    navigatorConfiguration = NavigatorConfiguration(1, true, NavigatorTransaction.SHOW_HIDE))
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -63,6 +61,7 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
         val restartRootFragmentCheckBox = findViewById<View>(R.id.restartSwitch) as SwitchCompat
         findViewById<Button>(R.id.resetCurrentTab).setOnClickListener { multipleStackNavigator.resetCurrentTab(restartRootFragmentCheckBox.isChecked) }
         findViewById<Button>(R.id.resetXTab).setOnClickListener { multipleStackNavigator.reset(1, restartRootFragmentCheckBox.isChecked) }
+        findViewById<Button>(R.id.resetXTabXFragment).setOnClickListener { multipleStackNavigator.reset(1, 2) }
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         findViewById<Button>(R.id.reset).setOnClickListener { multipleStackNavigator.reset() }
