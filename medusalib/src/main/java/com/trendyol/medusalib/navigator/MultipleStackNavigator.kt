@@ -32,29 +32,24 @@ open class MultipleStackNavigator(
 
     override fun start(fragment: Fragment) {
         start(fragment, DEFAULT_GROUP_NAME)
-        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, tabIndex: Int) {
         start(fragment, tabIndex, DEFAULT_GROUP_NAME)
-        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, tabIndex: Int, fragmentGroupName: String) {
         switchTab(tabIndex)
         start(fragment, fragmentGroupName)
         navigatorListener?.onTabChanged(tabIndex)
-        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, fragmentGroupName: String) {
         start(fragment, fragmentGroupName, transitionAnimationType)
-        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, transitionAnimation: TransitionAnimationType) {
         start(fragment, DEFAULT_GROUP_NAME, transitionAnimation)
-        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType?) {
@@ -81,6 +76,7 @@ open class MultipleStackNavigator(
                 groupName = fragmentGroupName
             )
         )
+        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun goBack() {
@@ -132,7 +128,6 @@ open class MultipleStackNavigator(
         }
 
         clearAllFragments(tabIndex, resetRootFragment)
-        fragmentManagerController.getFragment(getCurrentFragmentTag())?.let { navigatorListener?.onDestinationChanged(it) }
     }
 
     override fun resetCurrentTab(resetRootFragment: Boolean) {

@@ -182,7 +182,7 @@ interface Navigator {
          * @param fragment is passed from navigator library and client
          * can use fragment parameter as wished.
          */
-        fun onDestinationChanged(fragment: Fragment)
+        fun onDestinationChanged(fragment: Fragment) {}
     }
 
     interface OnGoBackListener {
