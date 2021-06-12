@@ -2,6 +2,6 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <translate
         android:duration="@android:integer/config_longAnimTime"
-        android:fromYDelta="0%p"
-        android:toYDelta="100%p" />
+        android:fromYDelta="-100%p"
+        android:toYDelta="0%p" />
 </set>
