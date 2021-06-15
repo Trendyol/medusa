@@ -76,6 +76,7 @@ open class MultipleStackNavigator(
                 groupName = fragmentGroupName
             )
         )
+        navigatorListener?.onDestinationChanged(fragment)
     }
 
     override fun goBack() {
@@ -88,7 +89,6 @@ open class MultipleStackNavigator(
         if (shouldExit() && shouldGoBackToInitialIndex()) {
             fragmentStackState.insertTabToBottom(navigatorConfiguration.initialTabIndex)
         }
-
 
         if (fragmentStackState.hasSelectedTabOnlyRoot()) {
             fragmentManagerController.disableFragment(getCurrentFragmentTag())
@@ -141,9 +141,11 @@ open class MultipleStackNavigator(
             fragmentStackState.switchTab(currentTabIndex)
             fragmentStackState.notifyStackItemAdd(currentTabIndex, StackItem(fragmentTag = createdTag))
             fragmentManagerController.addFragment(rootFragmentData)
+            navigatorListener?.onDestinationChanged(rootFragmentData.fragment)
         } else {
             val upperFragmentTag = getCurrentFragmentTag()
             fragmentManagerController.enableFragment(upperFragmentTag)
+            fragmentManagerController.getFragment(upperFragmentTag)?.let { navigatorListener?.onDestinationChanged(it) }
         }
     }
 
@@ -204,6 +206,7 @@ open class MultipleStackNavigator(
         val rootFragmentData = FragmentData(rootFragment, rootFragmentTag)
         fragmentManagerController.addFragment(rootFragmentData)
         navigatorListener?.onTabChanged(navigatorConfiguration.initialTabIndex)
+        navigatorListener?.onDestinationChanged(rootFragment)
     }
 
     private fun loadStackStateFromSavedState(savedState: Bundle) {
@@ -229,8 +232,10 @@ open class MultipleStackNavigator(
             val rootFragmentData = FragmentData(rootFragment, createdTag)
             fragmentStackState.notifyStackItemAdd(fragmentStackState.getSelectedTabIndex(), StackItem(createdTag))
             fragmentManagerController.addFragment(rootFragmentData)
+            navigatorListener?.onDestinationChanged(rootFragmentData.fragment)
         } else {
             fragmentManagerController.enableFragment(upperFragmentTag)
+            fragmentManagerController.getFragment(getCurrentFragmentTag())?.let { navigatorListener?.onDestinationChanged(it) }
         }
     }
 
