@@ -157,9 +157,9 @@ interface Navigator {
     /**
      * Returns to the given fragmentStackIndex in the tabIndex
      * @param tabIndex
-     * @param fragmentStackIndex return fragmentStackIndex
+     * @param targetStackIndex return targetStackIndex
      */
-    fun reset(tabIndex: Int, fragmentStackIndex: Int)
+    fun reset(tabIndex: Int, targetStackIndex: Int)
 
     /**
      * Listeners
