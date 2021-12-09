@@ -158,6 +158,21 @@ open class MultipleStackNavigator(
         initializeStackState()
     }
 
+    override fun reset(tabIndex: Int, targetStackIndex: Int) {
+        val fragmentTagStack = fragmentStackState.fragmentTagStack[tabIndex]
+        val stackSize = fragmentTagStack.size - 1
+        if (stackSize > targetStackIndex) {
+            (stackSize downTo targetStackIndex + 1).forEach { position ->
+                fragmentManagerController.findFragmentByTagAndRemove(fragmentTagStack[position].fragmentTag)
+                fragmentTagStack.pop()
+            }
+            fragmentManagerController.commitAllowingStateLoss()
+            fragmentManagerController.enableFragment(getCurrentFragmentTag())
+        } else {
+            reset(tabIndex)
+        }
+    }
+
     override fun clearGroup(fragmentGroupName: String) {
         if (fragmentGroupName == DEFAULT_GROUP_NAME) {
             throw IllegalArgumentException("Fragment group name can not be empty.")

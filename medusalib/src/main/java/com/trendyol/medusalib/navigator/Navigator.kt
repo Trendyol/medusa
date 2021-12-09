@@ -155,6 +155,13 @@ interface Navigator {
     fun initialize(savedState: Bundle?)
 
     /**
+     * Returns to the given fragmentStackIndex in the tabIndex
+     * @param tabIndex
+     * @param targetStackIndex return targetStackIndex
+     */
+    fun reset(tabIndex: Int, targetStackIndex: Int)
+
+    /**
      * Listeners
      */
 

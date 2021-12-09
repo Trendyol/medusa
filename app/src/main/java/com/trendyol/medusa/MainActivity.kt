@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
         val restartRootFragmentCheckBox = findViewById<View>(R.id.restartSwitch) as SwitchCompat
         findViewById<Button>(R.id.resetCurrentTab).setOnClickListener { multipleStackNavigator.resetCurrentTab(restartRootFragmentCheckBox.isChecked) }
         findViewById<Button>(R.id.resetXTab).setOnClickListener { multipleStackNavigator.reset(1, restartRootFragmentCheckBox.isChecked) }
+        findViewById<Button>(R.id.resetXTabXFragment).setOnClickListener { multipleStackNavigator.reset(1, 2) }
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         findViewById<Button>(R.id.reset).setOnClickListener { multipleStackNavigator.reset() }
