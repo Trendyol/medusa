@@ -158,16 +158,18 @@ open class MultipleStackNavigator(
         initializeStackState()
     }
 
-    override fun reset(tabIndex: Int, fragmentStackIndex: Int) {
+    override fun reset(tabIndex: Int, targetStackIndex: Int) {
         val fragmentTagStack = fragmentStackState.fragmentTagStack[tabIndex]
         val stackSize = fragmentTagStack.size - 1
-        if (stackSize > fragmentStackIndex) {
-            (stackSize downTo fragmentStackIndex + 1).forEach { position ->
+        if (stackSize > targetStackIndex) {
+            (stackSize downTo targetStackIndex + 1).forEach { position ->
                 fragmentManagerController.findFragmentByTagAndRemove(fragmentTagStack[position].fragmentTag)
                 fragmentTagStack.pop()
             }
             fragmentManagerController.commitAllowingStateLoss()
             fragmentManagerController.enableFragment(getCurrentFragmentTag())
+        } else {
+            reset(tabIndex)
         }
     }
 
