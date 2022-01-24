@@ -29,15 +29,8 @@ Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
 
 ## Setup
 ```gradle
-allprojects {
-    repositories {
-	    maven { url 'https://jitpack.io' }
-    }
-}
-```
-```gradle
 dependencies {
-    implementation 'com.github.trendyol:medusa:0.9.2'
+    implementation 'com.trendyol:medusa:0.9.0'
 }
 ```
 
