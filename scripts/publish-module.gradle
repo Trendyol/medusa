@@ -49,6 +49,26 @@ afterEvaluate {
 
                     developers {
                         developer {
+                            id = 'erkutaras'
+                            name = 'Erkut Aras'
+                            email = 'erkut.aras@trendyol.com'
+                        }
+                        developer {
+                            id = 'muratcanbur'
+                            name = 'Murat Can Bur'
+                            email = 'muratcan.bur@trendyol.com'
+                        }
+                        developer {
+                            id = 'bsobe'
+                            name = 'Barış Söbe'
+                            email = 'baris.sobe@trendyol.com'
+                        }
+                        developer {
+                            id = 'MertNYuksel'
+                            name = 'Mert Nevzat Yüksel'
+                            email = 'mert.yuksel@trendyol.com'
+                        }
+                        developer {
                             id = 'ibrahimsn98'
                             name = 'İbrahim Süren'
                             email = 'ibrahim.suren@trendyol.com'
