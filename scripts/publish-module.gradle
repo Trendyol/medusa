@@ -1,0 +1,101 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    if (project.plugins.findPlugin("com.android.library")) {
+        from android.sourceSets.main.java.srcDirs
+        from android.sourceSets.main.kotlin.srcDirs
+    } else {
+        from sourceSets.main.java.srcDirs
+        from sourceSets.main.kotlin.srcDirs
+    }
+}
+
+artifacts {
+    archives androidSourcesJar
+}
+
+group = PUBLISH_GROUP_ID
+version = PUBLISH_VERSION
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+
+                if (project.plugins.findPlugin("com.android.library")) {
+                    from components.release
+                } else {
+                    from components.java
+                }
+
+                artifact androidSourcesJar
+
+                pom {
+                    name = PUBLISH_ARTIFACT_ID
+                    description = PUBLISH_DESCRIPTION
+                    url = PUBLISH_URL
+
+                    licenses {
+                        license {
+                            name = PUBLISH_LICENSE_NAME
+                            url = PUBLISH_LICENSE_URL
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'erkutaras'
+                            name = 'Erkut Aras'
+                            email = 'erkut.aras@trendyol.com'
+                        }
+                        developer {
+                            id = 'muratcanbur'
+                            name = 'Murat Can Bur'
+                            email = 'muratcan.bur@trendyol.com'
+                        }
+                        developer {
+                            id = 'bsobe'
+                            name = 'Barış Söbe'
+                            email = 'baris.sobe@trendyol.com'
+                        }
+                        developer {
+                            id = 'MertNYuksel'
+                            name = 'Mert Nevzat Yüksel'
+                            email = 'mert.yuksel@trendyol.com'
+                        }
+                        developer {
+                            id = 'ibrahimsn98'
+                            name = 'İbrahim Süren'
+                            email = 'ibrahim.suren@trendyol.com'
+                        }
+                        developer {
+                            id = 'mucahidkambur'
+                            name = 'Mücahid Kambur'
+                            email = 'mucahid.kambur@trendyol.com'
+                        }
+                    }
+
+                    scm {
+                        connection = PUBLISH_SCM_CONNECTION
+                        developerConnection = PUBLISH_SCM_DEV_CONNECTION
+                        url = PUBLISH_SCM_URL
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    useInMemoryPgpKeys(
+        rootProject.ext["signing.keyId"],
+        rootProject.ext["signing.key"],
+        rootProject.ext["signing.password"],
+    )
+    sign publishing.publications
+}

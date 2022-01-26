@@ -29,15 +29,8 @@ Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
 
 ## Setup
 ```gradle
-allprojects {
-    repositories {
-	    maven { url 'https://jitpack.io' }
-    }
-}
-```
-```gradle
 dependencies {
-    implementation 'com.github.trendyol:medusa:0.9.2'
+    implementation 'com.trendyol:medusa:0.9.0'
 }
 ```
 
@@ -48,7 +41,7 @@ License
 --------
 
 
-    Copyright 2018-2019 Trendyol.com
+    Copyright 2018-2022 Trendyol.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
