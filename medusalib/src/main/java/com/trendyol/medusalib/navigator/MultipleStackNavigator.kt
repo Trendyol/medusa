@@ -3,6 +3,10 @@ package com.trendyol.medusalib.navigator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.trendyol.medusalib.navigator.controller.FragmentManagerController
 import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.data.StackItem
@@ -19,6 +23,7 @@ open class MultipleStackNavigator(
     private val transitionAnimationType: TransitionAnimationType? = null
 ) : Navigator {
 
+    private var destinationChangeLiveData = MutableLiveData<Fragment>()
     private val tagCreator: TagCreator = UniqueTagCreator()
 
     private val fragmentManagerController = FragmentManagerController(
@@ -76,6 +81,7 @@ open class MultipleStackNavigator(
                 groupName = fragmentGroupName
             )
         )
+        notifyFragmentDestinationChange(fragment)
     }
 
     override fun goBack() {
@@ -141,8 +147,16 @@ open class MultipleStackNavigator(
             fragmentStackState.switchTab(currentTabIndex)
             fragmentStackState.notifyStackItemAdd(currentTabIndex, StackItem(fragmentTag = createdTag))
             fragmentManagerController.addFragment(rootFragmentData)
+            notifyFragmentDestinationChange(rootFragment)
         } else {
             val upperFragmentTag = getCurrentFragmentTag()
+            notifyFragmentDestinationChange(
+                requireNotNull(
+                    fragmentManagerController.getFragment(
+                        upperFragmentTag
+                    )
+                )
+            )
             fragmentManagerController.enableFragment(upperFragmentTag)
         }
     }
@@ -190,6 +204,16 @@ open class MultipleStackNavigator(
         }
     }
 
+    override fun observeDestinationChanges(
+        lifecycleOwner: LifecycleOwner,
+        destinationChangedListener: (Fragment) -> Unit
+    ) {
+        destinationChangeLiveData.observe(
+            lifecycleOwner,
+            Observer { destinationChangedListener.invoke(it) }
+        )
+    }
+
     private fun initializeStackState() {
         val initialTabIndex = navigatorConfiguration.initialTabIndex
         val rootFragment = rootFragmentProvider.get(initialTabIndex).invoke()
@@ -204,6 +228,7 @@ open class MultipleStackNavigator(
         val rootFragmentData = FragmentData(rootFragment, rootFragmentTag)
         fragmentManagerController.addFragment(rootFragmentData)
         navigatorListener?.onTabChanged(navigatorConfiguration.initialTabIndex)
+        notifyFragmentDestinationChange(rootFragment)
     }
 
     private fun loadStackStateFromSavedState(savedState: Bundle) {
@@ -223,14 +248,20 @@ open class MultipleStackNavigator(
 
     private fun showUpperFragment() {
         val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab()?.fragmentTag
-        if (upperFragmentTag == null || fragmentManagerController.isFragmentNull(upperFragmentTag)) {
+        val upperFragment = upperFragmentTag?.let { fragmentManagerController.getFragment(it) }
+        if (upperFragmentTag == null || upperFragment == null) {
             val rootFragment = getRootFragment(fragmentStackState.getSelectedTabIndex())
             val createdTag = tagCreator.create(rootFragment)
             val rootFragmentData = FragmentData(rootFragment, createdTag)
-            fragmentStackState.notifyStackItemAdd(fragmentStackState.getSelectedTabIndex(), StackItem(createdTag))
+            fragmentStackState.notifyStackItemAdd(
+                fragmentStackState.getSelectedTabIndex(),
+                StackItem(createdTag)
+            )
             fragmentManagerController.addFragment(rootFragmentData)
+            notifyFragmentDestinationChange(rootFragment)
         } else {
             fragmentManagerController.enableFragment(upperFragmentTag)
+            notifyFragmentDestinationChange(upperFragment)
         }
     }
 
@@ -272,6 +303,25 @@ open class MultipleStackNavigator(
             return (getCurrentFragment() as Navigator.OnGoBackListener).onGoBack()
         }
         return true
+    }
+
+    private fun notifyFragmentDestinationChange(fragment: Fragment) {
+        fragment.lifecycle.addObserver(object: DefaultLifecycleObserver {
+            override fun onStart(owner: LifecycleOwner) {
+                owner.lifecycle.removeObserver(this)
+                fragment.viewLifecycleOwner.lifecycle.addObserver(
+                    object : DefaultLifecycleObserver {
+                        override fun onCreate(owner: LifecycleOwner) {
+                            destinationChangeLiveData.value = fragment
+                        }
+
+                        override fun onDestroy(owner: LifecycleOwner) {
+                            owner.lifecycle.removeObserver(this)
+                        }
+                    }
+                )
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

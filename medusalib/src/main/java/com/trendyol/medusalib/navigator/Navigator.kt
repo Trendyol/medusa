@@ -2,6 +2,7 @@ package com.trendyol.medusalib.navigator
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
@@ -163,6 +164,18 @@ interface Navigator {
     /**
      * Listeners
      */
+
+    /*
+    Observes any changes made in fragment back stack with the given lifecycle.
+    All implementation of Navigator interface must guarantee following points:
+    - View lifecycle of the fragments that is observed by the listener must be at least in
+    STARTED state.
+
+    - destinationChangedListener must be removed when the given lifecycle owner is reached
+    DESTROYED state
+     */
+    fun observeDestinationChanges(lifecycleOwner: LifecycleOwner,
+                                  destinationChangedListener: (Fragment) -> Unit)
 
     interface NavigatorListener {
 

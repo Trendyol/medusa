@@ -2,6 +2,7 @@ package com.trendyol.medusa
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -72,6 +73,10 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
         findViewById<Button>(R.id.reset).setOnClickListener { multipleStackNavigator.reset() }
         findViewById<Button>(R.id.resetWithNewSet).setOnClickListener {
             multipleStackNavigator.resetWithFragmentProvider(newListOfFragments)
+        }
+
+        multipleStackNavigator.observeDestinationChanges(this) {
+            Log.d("Destination Changed", "${it.javaClass.name} - ${it.tag}")
         }
 
     }
