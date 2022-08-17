@@ -104,10 +104,6 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         currentTransaction?.setCustomAnimations(enter, exit)
     }
 
-    fun isFragmentNull(fragmentTag: String): Boolean {
-        return getFragment(fragmentTag) == null
-    }
-
     private fun getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag: String): Fragment? {
         var fragment = getFragment(fragmentTag)
         if (fragment == null && fragmentManager.executePendingTransactions()) {
