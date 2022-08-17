@@ -316,6 +316,9 @@ open class MultipleStackNavigator(
                         }
 
                         override fun onDestroy(owner: LifecycleOwner) {
+                            if (destinationChangeLiveData.value == fragment) {
+                                destinationChangeLiveData.value = null
+                            }
                             owner.lifecycle.removeObserver(this)
                         }
                     }
