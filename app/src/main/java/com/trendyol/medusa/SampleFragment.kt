@@ -37,6 +37,10 @@ class SampleFragment : BaseFragment() {
             fragment.arguments = bundle
             return fragment
         }
+
+        fun from(fragment: SampleFragment): String? {
+            return fragment.arguments?.getString(KEY)
+        }
     }
 
 }
