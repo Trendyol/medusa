@@ -31,7 +31,7 @@ android {
 
 ext {
     PUBLISH_GROUP_ID = 'com.trendyol'
-    PUBLISH_VERSION = '0.9.2'
+    PUBLISH_VERSION = '0.10.0'
     PUBLISH_ARTIFACT_ID = 'medusa'
     PUBLISH_DESCRIPTION = "Android Fragment Stack Controller"
     PUBLISH_URL = "https://github.com/Trendyol/medusa"
