@@ -23,7 +23,7 @@ open class MultipleStackNavigator(
     private val transitionAnimationType: TransitionAnimationType? = null
 ) : Navigator {
 
-    private var destinationChangeLiveData = MutableLiveData<Fragment>()
+    private var destinationChangeLiveData = MutableLiveData<Fragment?>()
     private val tagCreator: TagCreator = UniqueTagCreator()
 
     private val fragmentManagerController = FragmentManagerController(
@@ -210,7 +210,11 @@ open class MultipleStackNavigator(
     ) {
         destinationChangeLiveData.observe(
             lifecycleOwner,
-            Observer { destinationChangedListener.invoke(it) }
+            Observer { fragment ->
+                if (fragment != null) {
+                    destinationChangedListener(fragment)
+                }
+            }
         )
     }
 
