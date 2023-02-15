@@ -149,15 +149,14 @@ open class MultipleStackNavigator(
             fragmentManagerController.addFragment(rootFragmentData)
             notifyFragmentDestinationChange(rootFragment)
         } else {
-            val upperFragmentTag = getCurrentFragmentTag()
-            notifyFragmentDestinationChange(
-                requireNotNull(
-                    fragmentManagerController.getFragment(
-                        upperFragmentTag
-                    )
-                )
-            )
-            fragmentManagerController.enableFragment(upperFragmentTag)
+            val upperFragmentTag: String = getCurrentFragmentTag()
+            val upperFragment: Fragment? = fragmentManagerController.getFragment(upperFragmentTag)
+
+            val newDestination: Fragment = upperFragment ?: getRootFragment(currentTabIndex)
+            val newDestinationTag: String = tagCreator.create(newDestination)
+
+            notifyFragmentDestinationChange(newDestination)
+            fragmentManagerController.enableFragment(newDestinationTag)
         }
     }
 
