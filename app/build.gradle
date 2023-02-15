@@ -23,6 +23,7 @@ android {
             includeAndroidResources = true
         }
     }
+    namespace 'com.trendyol.medusa'
 }
 
 dependencies {
