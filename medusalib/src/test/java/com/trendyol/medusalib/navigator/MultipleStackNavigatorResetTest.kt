@@ -1,8 +1,6 @@
 package com.trendyol.medusalib.navigator
 
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.lifecycle.Lifecycle
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import com.trendyol.medusalib.TestChildFragment
 import com.trendyol.medusalib.TestParentFragment
@@ -11,7 +9,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class MultipleStackNavigatorTest {
+class MultipleStackNavigatorResetTest {
 
     @Test
     fun `given MultipleStackNavigator without an upper fragment, when resetting with tab index, should reset to root`() {
