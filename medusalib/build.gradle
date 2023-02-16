@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace 'com.trendyol.medusalib'
     compileSdkVersion 32
 
     defaultConfig {
@@ -9,7 +10,6 @@ android {
         targetSdkVersion 32
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -25,7 +25,6 @@ android {
             includeAndroidResources = true
         }
     }
-    namespace 'com.trendyol.medusalib'
 }
 
 ext {
@@ -44,15 +43,14 @@ ext {
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "androidx.lifecycle:lifecycle-common:2.4.1"
+    implementation libs.androidXAppCompat
+    implementation libs.androidXLifecycleCommon
+    implementation libs.kotlinStdLib
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.robolectric:robolectric:4.9.2'
-    testImplementation 'com.google.truth:truth:1.0'
-    testImplementation("androidx.fragment:fragment-testing:1.5.5")
+    testImplementation libs.androidXFragmentTesting
+    testImplementation libs.junit
+    testImplementation libs.robolectric
+    testImplementation libs.truth
 }
 
 repositories {
