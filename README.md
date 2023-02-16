@@ -35,13 +35,13 @@ dependencies {
 ```
 
 ## Icon Credits
-All credits goes to [Tatiana](https://dribbble.com/DarumaCreative)
+All credits go to [Tatiana](https://dribbble.com/DarumaCreative)
 
 License
 --------
 
 
-    Copyright 2018-2022 Trendyol.com
+    Copyright 2018-2023 Trendyol.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
