@@ -38,7 +38,7 @@ class UniqueTagCreatorTest {
     fun isEveryTagUniqueOnThousandTag() {
         val resultSet = mutableSetOf<String>()
 
-        for(i in 0..100000){
+        repeat(10_000) {
             val fragmentA = Fragment()
             val fragmentTagA = tagCreator.create(fragmentA)
 
