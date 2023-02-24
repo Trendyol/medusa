@@ -16,9 +16,9 @@ class MultipleStackNavigatorGoBackTest {
 
     @Test
     fun `given MultipleStackNavigator with empty stack, when calling canGoBack, should return false`() {
-        launchFragmentInContainer<TestParentFragment>().onFragment {
+        launchFragmentInContainer<TestParentFragment>().onFragment { fragment ->
             val sut = MultipleStackNavigator(
-                fragmentManager = it.childFragmentManager,
+                fragmentManager = fragment.childFragmentManager,
                 containerId = TestParentFragment.CONTAINER_ID,
                 rootFragmentProvider = listOf({ TestChildFragment.newInstance("instance 1") }),
             )
@@ -32,9 +32,9 @@ class MultipleStackNavigatorGoBackTest {
 
     @Test
     fun `given MultipleStackNavigator with empty stack, when going back, should throw exception`() {
-        launchFragmentInContainer<TestParentFragment>().onFragment {
+        launchFragmentInContainer<TestParentFragment>().onFragment { fragment ->
             val sut = MultipleStackNavigator(
-                fragmentManager = it.childFragmentManager,
+                fragmentManager = fragment.childFragmentManager,
                 containerId = TestParentFragment.CONTAINER_ID,
                 rootFragmentProvider = listOf({ TestChildFragment.newInstance("instance 1") }),
             )
