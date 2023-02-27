@@ -23,7 +23,7 @@ jobs:
           java-version: '11'
 
       - name: Build
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assemble --stacktrace
 
   test:
     runs-on: ubuntu-latest
