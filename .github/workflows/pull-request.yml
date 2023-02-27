@@ -1,0 +1,49 @@
+name: Pull Request pipeline
+
+on:
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Build
+        run: ./gradlew assembleDebug --stacktrace
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Run tests
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Upload Unit Test Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: unit-test-report
+          path: ./**/build/reports/tests/testDebugUnitTest/**
