@@ -52,6 +52,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
             TransitionAnimationType.BOTTOM_TO_TOP -> setCustomAnimations(R.anim.empty_animation, R.anim.exit_to_bottom)
             TransitionAnimationType.TOP_TO_BOTTOM -> setCustomAnimations(R.anim.empty_animation, R.anim.exit_to_top)
             TransitionAnimationType.FADE_IN_OUT -> setCustomAnimations(R.anim.empty_animation, R.anim.fade_out)
+            null -> { /* no-op */ }
         }
 
         currentTransaction?.remove(getFragment(fragmentTag))
@@ -87,6 +88,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
                 TransitionAnimationType.BOTTOM_TO_TOP -> setCustomAnimations(R.anim.enter_from_bottom, R.anim.empty_animation)
                 TransitionAnimationType.TOP_TO_BOTTOM -> setCustomAnimations(R.anim.enter_from_top, R.anim.empty_animation)
                 TransitionAnimationType.FADE_IN_OUT -> setCustomAnimations(R.anim.fade_in, R.anim.empty_animation)
+                null -> { /* no-op */ }
             }
             currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
         }

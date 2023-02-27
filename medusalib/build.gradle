@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace 'com.trendyol.medusalib'
     compileSdkVersion 32
 
     defaultConfig {
@@ -9,7 +10,6 @@ android {
         targetSdkVersion 32
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -29,7 +29,7 @@ android {
 
 ext {
     PUBLISH_GROUP_ID = 'com.trendyol'
-    PUBLISH_VERSION = '0.10.1'
+    PUBLISH_VERSION = '0.10.2'
     PUBLISH_ARTIFACT_ID = 'medusa'
     PUBLISH_DESCRIPTION = "Android Fragment Stack Controller"
     PUBLISH_URL = "https://github.com/Trendyol/medusa"
@@ -43,15 +43,14 @@ ext {
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "androidx.lifecycle:lifecycle-common:2.4.1"
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.robolectric:robolectric:4.3.1'
-    testImplementation 'com.google.truth:truth:1.0'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation libs.androidXAppCompat
+    implementation libs.androidXLifecycleCommon
+    implementation libs.kotlinStdLib
+
+    testImplementation libs.androidXFragmentTesting
+    testImplementation libs.junit
+    testImplementation libs.robolectric
+    testImplementation libs.truth
 }
 
 repositories {

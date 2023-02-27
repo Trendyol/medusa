@@ -30,18 +30,18 @@ Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
 ## Setup
 ```gradle
 dependencies {
-    implementation 'com.trendyol:medusa:0.10.1'
+    implementation 'com.trendyol:medusa:0.10.2'
 }
 ```
 
 ## Icon Credits
-All credits goes to [Tatiana](https://dribbble.com/DarumaCreative)
+All credits go to [Tatiana](https://dribbble.com/DarumaCreative)
 
 License
 --------
 
 
-    Copyright 2018-2022 Trendyol.com
+    Copyright 2018-2023 Trendyol.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
