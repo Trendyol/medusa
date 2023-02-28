@@ -31,7 +31,7 @@ Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
 ## Setup
 ```gradle
 dependencies {
-    implementation 'com.trendyol:medusa:0.10.3'
+    implementation 'com.trendyol:medusa:<latest-version>'
 }
 ```
 
