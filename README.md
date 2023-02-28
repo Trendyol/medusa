@@ -2,7 +2,8 @@
 
 Fragment manager for your Single Activity - Multi Fragment app. 
 
-[![](https://jitpack.io/v/Trendyol/medusa.svg)](https://jitpack.io/#Trendyol/medusa)
+[![](https://img.shields.io/nexus/r/com.trendyol/medusa?server=https%3A%2F%2Foss.sonatype.org%2F)](https://oss.sonatype.org/#nexus-search;gav~com.trendyol~medusa~~~~kw,versionexpand)
+[![](https://img.shields.io/github/actions/workflow/status/Trendyol/medusa/pull-request.yml?branch=master)](https://github.com/Trendyol/medusa/actions/workflows/pull-request.yml?query=branch%3Amaster)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Medusa is smart enough to handle fragment attachment/detachment or hiding/showing fragment.  No more memory handling. No more fragment stack logic.
@@ -30,7 +31,7 @@ Check out our [wiki](https://github.com/Trendyol/medusa/wiki)!
 ## Setup
 ```gradle
 dependencies {
-    implementation 'com.trendyol:medusa:0.10.3'
+    implementation 'com.trendyol:medusa:<latest-version>'
 }
 ```
 
