@@ -66,19 +66,27 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
         multipleStackNavigator.initialize(savedInstanceState)
         val restartRootFragmentCheckBox = findViewById<View>(R.id.restartSwitch) as SwitchCompat
-        findViewById<Button>(R.id.resetCurrentTab).setOnClickListener { multipleStackNavigator.resetCurrentTab(restartRootFragmentCheckBox.isChecked) }
-        findViewById<Button>(R.id.resetXTab).setOnClickListener { multipleStackNavigator.reset(1, restartRootFragmentCheckBox.isChecked) }
+        findViewById<Button>(R.id.resetCurrentTab).setOnClickListener {
+            multipleStackNavigator.resetCurrentTab(restartRootFragmentCheckBox.isChecked)
+        }
+        findViewById<Button>(R.id.resetXTab).setOnClickListener {
+            multipleStackNavigator.reset(1, restartRootFragmentCheckBox.isChecked)
+        }
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         findViewById<Button>(R.id.reset).setOnClickListener { multipleStackNavigator.reset() }
         findViewById<Button>(R.id.resetWithNewSet).setOnClickListener {
             multipleStackNavigator.resetWithFragmentProvider(newListOfFragments)
         }
-
+        findViewById<Button>(R.id.startWithGroup).setOnClickListener {
+            multipleStackNavigator.start(FragmentGenerator.generateNewFragment(), "group1")
+        }
+        findViewById<Button>(R.id.resetGroup).setOnClickListener {
+            multipleStackNavigator.clearGroup("group1")
+        }
         multipleStackNavigator.observeDestinationChanges(this) {
             Log.d("Destination Changed", "${it.javaClass.name} - ${it.tag}")
         }
-
     }
 
     override fun onBackPressed() {
