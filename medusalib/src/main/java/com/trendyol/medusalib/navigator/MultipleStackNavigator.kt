@@ -175,13 +175,18 @@ open class MultipleStackNavigator(
         if (fragmentGroupName == DEFAULT_GROUP_NAME) {
             throw IllegalArgumentException("Fragment group name can not be empty.")
         }
+        val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab()?.fragmentTag
+
         val poppedFragmentTags = fragmentStackState
             .popItems(fragmentGroupName)
             .map { it.fragmentTag }
 
         if (poppedFragmentTags.isNotEmpty()) {
             fragmentManagerController.removeFragments(poppedFragmentTags)
-            showUpperFragment()
+            val poppedUpperFragment = poppedFragmentTags.contains(upperFragmentTag)
+            if (poppedUpperFragment) {
+                showUpperFragment()
+            }
         }
     }
 

@@ -201,6 +201,87 @@ class DestinationListenerTest {
             }
         }
     }
+
+    @Test
+    fun `given four fragment, when clearGroup is called to remove middle fragments, then observeDestinationChanges should not be triggered`() {
+        val testObserver = TestObserver<Fragment>()
+        launchActivity<MainActivity>().use { scenario ->
+            // Given
+            scenario.moveToState(Lifecycle.State.RESUMED)
+            scenario.onActivity { activity ->
+                activity.multipleStackNavigator.observeDestinationChanges(activity, testObserver)
+                activity.doAndExecuteFragmentTransactions {
+                    start(FragmentGenerator.generateNewFragment())
+                    start(FragmentGenerator.generateNewFragment(), "group-name")
+                    start(FragmentGenerator.generateNewFragment(), "group-name")
+                    start(FragmentGenerator.generateNewFragment())
+                    clearGroup("group-name")
+                }
+                activity.supportFragmentManager.executePendingTransactions()
+
+                Assert.assertEquals(
+                    "fragment 2",
+                    testObserver.getLastFragmentName(indexFromLast = 3)
+                )
+                Assert.assertEquals(
+                    "fragment 3",
+                    testObserver.getLastFragmentName(indexFromLast = 2)
+                )
+                Assert.assertEquals(
+                    "fragment 4",
+                    testObserver.getLastFragmentName(indexFromLast = 1)
+                )
+                Assert.assertEquals(
+                    "fragment 5",
+                    testObserver.getLastFragmentName(indexFromLast = 0)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `given four fragment, when clearGroup is called to last two fragments, then observeDestinationChanges should be triggered`() {
+        val testObserver = TestObserver<Fragment>()
+        launchActivity<MainActivity>().use { scenario ->
+            // Given
+            scenario.moveToState(Lifecycle.State.RESUMED)
+            scenario.onActivity { activity ->
+                activity.multipleStackNavigator.observeDestinationChanges(activity, testObserver)
+                activity.doAndExecuteFragmentTransactions {
+                    start(FragmentGenerator.generateNewFragment())
+                    start(FragmentGenerator.generateNewFragment())
+                    start(FragmentGenerator.generateNewFragment(), "group-name")
+                    start(FragmentGenerator.generateNewFragment(), "group-name")
+                }
+                activity.supportFragmentManager.executePendingTransactions()
+                activity.doAndExecuteFragmentTransactions {
+                    clearGroup("group-name")
+                }
+                activity.supportFragmentManager.executePendingTransactions()
+                Assert.assertEquals(
+                    "fragment 2",
+                    testObserver.getLastFragmentName(indexFromLast = 4)
+                )
+                Assert.assertEquals(
+                    "fragment 3",
+                    testObserver.getLastFragmentName(indexFromLast = 3)
+                )
+                Assert.assertEquals(
+                    "fragment 4",
+                    testObserver.getLastFragmentName(indexFromLast = 2)
+                )
+                Assert.assertEquals(
+                    "fragment 5",
+                    testObserver.getLastFragmentName(indexFromLast = 1)
+                )
+                Assert.assertEquals(
+                    "fragment 3",
+                    testObserver.getLastFragmentName(indexFromLast = 0)
+                )
+            }
+        }
+    }
+
     private fun MainActivity.doAndExecuteFragmentTransactions(run: MultipleStackNavigator.() -> Unit) =
         run.invoke(this.multipleStackNavigator).also { supportFragmentManager.executePendingTransactions() }
 
