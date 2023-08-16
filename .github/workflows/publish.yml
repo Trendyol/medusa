@@ -1,0 +1,39 @@
+name: Publish
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Run unit tests
+        uses: gradle/gradle-build-action@v2.7.0
+        with:
+          arguments: testDebugUnitTest
+
+      - name: Publish
+        uses: gradle/gradle-build-action@v2.7.0
+        with:
+          arguments: publish
+        env:
+          SIGNING_KEY: ${{ secrets.SONARTYPE_GPG_PRIVATE_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SONARTYPE_GPG_PASSPHRASE }}
+          OSSRH_USERNAME: ${{ secrets.SONARTYPE_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.SONARTYPE_PASSWORD }}
+          SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
