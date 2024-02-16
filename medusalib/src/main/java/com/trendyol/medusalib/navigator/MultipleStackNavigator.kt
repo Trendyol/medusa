@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.trendyol.medusalib.navigator.controller.FragmentManagerController
 import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.data.StackItem
@@ -212,14 +211,23 @@ open class MultipleStackNavigator(
         lifecycleOwner: LifecycleOwner,
         destinationChangedListener: (Fragment) -> Unit
     ) {
-        destinationChangeLiveData.observe(
-            lifecycleOwner,
-            Observer { fragment ->
-                if (fragment != null) {
-                    destinationChangedListener(fragment)
+        destinationChangeLiveData.observe(lifecycleOwner) { fragment ->
+            if (fragment != null) {
+                destinationChangedListener(fragment)
+            }
+        }
+    }
+
+    override fun getFragmentIndexInStackBySameType(tag: String?): Int {
+        if (tag.isNullOrEmpty()) return -1
+        fragmentStackState.fragmentTagStack.forEach { stack ->
+            stack.forEachIndexed { index, stackItem ->
+                if (stackItem.fragmentTag == tag) {
+                    return stack.size - index - 1
                 }
             }
-        )
+        }
+        return -1
     }
 
     private fun initializeStackState() {

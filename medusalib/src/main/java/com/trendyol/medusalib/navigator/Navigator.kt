@@ -152,30 +152,46 @@ interface Navigator {
      */
     fun onSaveInstanceState(outState: Bundle)
 
-    /*
-    * Initializes fragment stack state and adds related root fragments to your
-    * container if savedState is null. Otherwise reads and deserialize
-    * fragment stack state from given bundle.
-    * @param outState savedInstanceState parameter of onCreate method in
+    /**
+     * Initializes fragment stack state and adds related root fragments to your
+     * container if savedState is null. Otherwise reads and deserialize
+     * fragment stack state from given bundle.
+     *
+     * @param savedState savedInstanceState parameter of onCreate method in
      * your fragments or activities
-    */
+     */
     fun initialize(savedState: Bundle?)
 
     /**
      * Listeners
      */
 
-    /*
-    Observes any changes made in fragment back stack with the given lifecycle.
-    All implementation of Navigator interface must guarantee following points:
-    - View lifecycle of the fragments that is observed by the listener must be at least in
-    STARTED state.
-
-    - destinationChangedListener must be removed when the given lifecycle owner is reached
-    DESTROYED state
+    /**
+     * Observes any changes made in fragment back stack with the given lifecycle.
+     * All implementation of Navigator interface must guarantee following points:
+     *
+     * - View lifecycle of the fragments that is observed by the listener must be at least in
+     * STARTED state.
+     *
+     * - destinationChangedListener must be removed when the given lifecycle owner is reached
+     * DESTROYED state
      */
-    fun observeDestinationChanges(lifecycleOwner: LifecycleOwner,
-                                  destinationChangedListener: (Fragment) -> Unit)
+    fun observeDestinationChanges(
+        lifecycleOwner: LifecycleOwner,
+        destinationChangedListener: (Fragment) -> Unit,
+    )
+
+    /**
+     * Retrieves the index of a [Fragment] within the fragment stack based on the specified tag.
+     * If the tag is null or empty, returns -1.
+     * Iterates through the fragment stack to find the specified tag.
+     * Returns the index of the [Fragment] relative to the top of its stack if found; otherwise,
+     * returns -1.
+     *
+     * @param tag The tag of the [Fragment] to search for within the stack.
+     * @return The index of the [Fragment] within its stack if found; otherwise, -1.
+     */
+    fun getFragmentIndexInStackBySameType(tag: String?): Int
 
     interface NavigatorListener {
 
@@ -214,11 +230,8 @@ interface Navigator {
          * fragment.
          * @return NavigatorTransaction type (ATTACH_DETACH or SHOW_HIDE)
          *
-         * @see https://github.com/Trendyol/medusa/wiki/Fragment-Lifecycle
+         * @see <a href="https://github.com/Trendyol/medusa/wiki/Fragment-Lifecycle">Fragment Lifecycle</a>
          */
         fun getNavigatorTransaction(): NavigatorTransaction
     }
 }
-
-
-
