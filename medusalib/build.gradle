@@ -4,11 +4,11 @@ apply plugin: 'kotlin-parcelize'
 
 android {
     namespace 'com.trendyol.medusalib'
-    compileSdkVersion 32
+    compileSdkVersion 34
 
     defaultConfig {
-        targetSdkVersion 32
         minSdkVersion 21
+        targetSdkVersion 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

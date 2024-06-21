@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace 'com.trendyol.medusa'
-    compileSdkVersion 32
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.trendyol.medusa"
-        targetSdkVersion 32
         minSdkVersion 21
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
