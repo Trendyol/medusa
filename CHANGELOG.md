@@ -25,3 +25,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated Fragment testing from 1.5.5 to 1.8.0
 - Updated arch. core testing from 2.1.0 to 2.2.0
 - Updated Gradle Publish plugin from 1.1.0 to 2.0.0
+- Updated GitHub Actions dependencies 
