@@ -53,18 +53,19 @@ public class MainActivity2 extends AppCompatActivity implements Navigator.Naviga
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.navigation_home:
-                    multipleStackNavigator.switchTab(0);
-                    return true;
-                case R.id.navigation_dashboard:
-                    multipleStackNavigator.switchTab(1);
-                    return true;
-                case R.id.navigation_notifications:
-                    multipleStackNavigator.switchTab(2);
-                    return true;
+            final int itemId = menuItem.getItemId();
+            if (itemId == R.id.navigation_home) {
+                multipleStackNavigator.switchTab(0);
+                return true;
+            } else if (itemId == R.id.navigation_dashboard) {
+                multipleStackNavigator.switchTab(1);
+                return true;
+            } else if (itemId == R.id.navigation_notifications) {
+                multipleStackNavigator.switchTab(2);
+                return true;
+            } else {
+                return false;
             }
-            return false;
         }
     };
 

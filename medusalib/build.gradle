@@ -4,11 +4,11 @@ apply plugin: 'kotlin-parcelize'
 
 android {
     namespace 'com.trendyol.medusalib'
-    compileSdkVersion 32
+    compileSdkVersion 34
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 32
+        minSdkVersion 21
+        targetSdkVersion 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -18,6 +18,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     testOptions {
@@ -30,7 +35,7 @@ android {
 
 ext {
     PUBLISH_GROUP_ID = 'com.trendyol'
-    PUBLISH_VERSION = '0.11.0'
+    PUBLISH_VERSION = '0.12.0'
     PUBLISH_ARTIFACT_ID = 'medusa'
     PUBLISH_DESCRIPTION = "Android Fragment Stack Controller"
     PUBLISH_URL = "https://github.com/Trendyol/medusa"
