@@ -17,9 +17,12 @@ import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 import com.trendyol.medusalib.navigator.transaction.TransactionType
 import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
-class FragmentManagerController(private val fragmentManager: FragmentManager,
-                                private val containerId: Int,
-                                private val navigatorTransaction: NavigatorTransaction) {
+internal class FragmentManagerController(
+    private val fragmentManager: FragmentManager,
+    private val containerId: Int,
+    private val navigatorTransaction: NavigatorTransaction,
+    private val stagedFragmentHolder: StagedFragmentHolder,
+) {
 
     private var currentTransaction: FragmentTransaction? = null
 
@@ -70,7 +73,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
 
     fun addFragment(fragmentData: FragmentData) {
         checkAndCreateTransaction()
-
+        stageFragment(fragmentData)
         currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
         commitAllowingStateLoss()
     }
@@ -90,6 +93,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
                 TransitionAnimationType.FADE_IN_OUT -> setCustomAnimations(R.anim.fade_in, R.anim.empty_animation)
                 null -> { /* no-op */ }
             }
+            stageFragment(fragmentData)
             currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
         }
 
@@ -107,7 +111,7 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
     }
 
     private fun getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag: String): Fragment? {
-        var fragment = getFragment(fragmentTag)
+        var fragment = getFragment(fragmentTag) ?: stagedFragmentHolder.getStagedFragment(fragmentTag)
         if (fragment == null && fragmentManager.executePendingTransactions()) {
             fragment = getFragment(fragmentTag)
         }
@@ -173,5 +177,12 @@ class FragmentManagerController(private val fragmentManager: FragmentManager,
         if (currentTransaction == null) {
             currentTransaction = fragmentManager.beginTransaction()
         }
+    }
+
+    private fun stageFragment(fragmentData: FragmentData) {
+        stagedFragmentHolder.stageFragmentForCommit(
+            fragmentData.fragmentTag,
+            fragmentData.fragment,
+        )
     }
 }
