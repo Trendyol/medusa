@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - This changelog file
+- Fix a bug where a fragment that we want to hide is not added to the fragment manager,
+causing an IllegalStateException due to multiple fragment transactions occurring simultaneously 
+because of the executePendingTransactions() method call
 
 ### Changed
 
