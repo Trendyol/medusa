@@ -26,6 +26,8 @@ class TestChildFragment : Fragment() {
         }
     }
 
+    fun requireArgumentTitle() = requireArguments().getString(KEY_TITLE)!!
+
     companion object {
         fun newInstance(title: String): TestChildFragment {
             return TestChildFragment().apply {
