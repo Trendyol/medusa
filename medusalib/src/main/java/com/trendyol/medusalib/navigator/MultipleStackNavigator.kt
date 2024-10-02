@@ -164,7 +164,7 @@ open class MultipleStackNavigator(
             val upperFragment: Fragment? = fragmentManagerController.getFragment(upperFragmentTag)
 
             val newDestination: Fragment = upperFragment ?: getRootFragment(currentTabIndex)
-            val newDestinationTag: String = tagCreator.create(newDestination)
+            val newDestinationTag: String = newDestination.tag ?: tagCreator.create(newDestination)
 
             newDestination.observeFragmentLifecycle(
                 onViewCreated = ::onFragmentViewCreated,
