@@ -3,6 +3,7 @@ package com.trendyol.medusalib.navigator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.trendyol.medusalib.navigator.controller.PreloadedFragmentResult
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
 
@@ -68,6 +69,36 @@ interface Navigator {
      * all fragments which has the same group name.
      */
     fun start(fragment: Fragment, transitionAnimation: TransitionAnimationType)
+
+    /**
+     * Preloads a fragment into the current navigation stack without immediately displaying it.
+     *
+     * This method attaches the given fragment to the fragment manager and prepares it in a hidden.
+     * The fragment will not be visible to the user until it is started later using
+     * [startPreloadFragment].
+     *
+     * @param fragment The fragment instance to preload.
+     * @param fragmentTag The unique tag of fragment.
+     */
+    fun preloadFragment(fragment: Fragment, fragmentTag: String)
+
+    /**
+     * Starts a fragment that was previously preloaded, making it visible.
+     *
+     * This method takes a previously preloaded fragment identified by its [fragmentTag] and brings it
+     * to the foreground. If the fragment was successfully preloaded, it will be shown immediately. If
+     * the fragment was not found or not preloaded, the optionally provided [fallbackFragment] will be added
+     * and displayed as a fallback.
+     *
+     * @param fallbackFragment Fragment instance to display if the preloaded fragment cannot be found.
+     * @param fragmentTag The unique tag of the previously preloaded fragment to start.
+     *
+     * @return [PreloadedFragmentResult]
+     * - [PreloadedFragmentResult.Success] if the preloaded fragment was found and displayed.
+     * - [PreloadedFragmentResult.FallbackSuccess] if the fallback fragment was used instead.
+     * - [PreloadedFragmentResult.NotFound] if no suitable fragment was found and no fallback was provided.
+     */
+    fun startPreloadFragment(fallbackFragment: Fragment?, fragmentTag: String): PreloadedFragmentResult
 
     /**
      * Modifies fragment stack. Pops current fragment from

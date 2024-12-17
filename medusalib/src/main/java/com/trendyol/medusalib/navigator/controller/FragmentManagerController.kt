@@ -78,6 +78,32 @@ internal class FragmentManagerController(
         commitAllowingStateLoss()
     }
 
+    fun preloadFragment(fragmentData: FragmentData) {
+        checkAndCreateTransaction()
+        stageFragment(fragmentData)
+        currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)?.hide(fragmentData.fragment)
+        commitAllowingStateLoss()
+    }
+
+    fun showPreloadedFragment(
+        currentFragmentTag: String,
+        fragmentTag: String,
+        fallbackFragment: Fragment?,
+    ): PreloadedFragmentResult {
+        val fragment = getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag) ?: fallbackFragment
+        if (fragment == null) return PreloadedFragmentResult.NotFound
+
+        disableFragment(currentFragmentTag)
+
+        return if (fragment != fallbackFragment) {
+            enableFragment(fragmentTag)
+            PreloadedFragmentResult.Success
+        } else {
+            addFragment(FragmentData(fallbackFragment, fragmentTag))
+            PreloadedFragmentResult.FallbackSuccess
+        }
+    }
+
     fun disableAndStartFragment(disableFragmentTag: String, vararg fragmentDataArgs: FragmentData) {
         val disabledFragment = getFragmentWithExecutingPendingTransactionsIfNeeded(disableFragmentTag)
 
