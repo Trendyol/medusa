@@ -1,7 +1,6 @@
 package com.trendyol.medusa
 
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
