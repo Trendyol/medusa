@@ -9,7 +9,6 @@ import android.widget.Chronometer
 
 class SamplePreloadFragment : BaseFragment() {
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
