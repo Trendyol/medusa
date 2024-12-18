@@ -30,6 +30,7 @@ class PreloadFragmentTest {
             val preloadedFragment = parentFragment.childFragmentManager.findFragmentByTag(fragmentTag)
             Truth.assertThat(preloadedFragment).isNotNull()
             Truth.assertThat(preloadedFragment?.isVisible).isFalse()
+            Truth.assertThat(parentFragment.childFragmentManager.fragments.any { it.isVisible }).isTrue()
         }
     }
 
@@ -52,6 +53,9 @@ class PreloadFragmentTest {
             val startedFragment = parentFragment.childFragmentManager.findFragmentByTag(fragmentTag)
             Truth.assertThat(startedFragment).isNotNull()
             Truth.assertThat(startedFragment?.isVisible).isTrue()
+
+            val fragmentsWithoutPreloaded = parentFragment.childFragmentManager.fragments - startedFragment
+            Truth.assertThat(fragmentsWithoutPreloaded.all { it?.isVisible == false }).isTrue()
         }
     }
 
@@ -71,6 +75,9 @@ class PreloadFragmentTest {
             Truth.assertThat(result).isEqualTo(PreloadedFragmentResult.FallbackSuccess)
             Truth.assertThat(startedFragment).isNotNull()
             Truth.assertThat(startedFragment?.isVisible).isTrue()
+
+            val fragmentsWithoutPreloaded = parentFragment.childFragmentManager.fragments - startedFragment
+            Truth.assertThat(fragmentsWithoutPreloaded.all { it?.isVisible == false }).isTrue()
         }
     }
 
@@ -88,6 +95,7 @@ class PreloadFragmentTest {
             val fragment = parentFragment.childFragmentManager.findFragmentByTag(fragmentTag)
             Truth.assertThat(result).isEqualTo(PreloadedFragmentResult.NotFound)
             Truth.assertThat(fragment).isNull()
+            Truth.assertThat(parentFragment.childFragmentManager.fragments.any { it.isVisible }).isTrue()
         }
     }
 }
