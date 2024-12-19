@@ -7,6 +7,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.trendyol.medusalib.navigator.controller.FragmentManagerController
+import com.trendyol.medusalib.navigator.controller.PreloadedFragmentResult
 import com.trendyol.medusalib.navigator.controller.StagedFragmentHolder
 import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.data.StackItem
@@ -56,6 +57,19 @@ open class MultipleStackNavigator(
 
     override fun start(fragment: Fragment, transitionAnimation: TransitionAnimationType) {
         start(fragment, DEFAULT_GROUP_NAME, transitionAnimation)
+    }
+
+    override fun preloadFragment(fragment: Fragment, fragmentTag: String) {
+        fragmentManagerController.preloadFragment(FragmentData(fragment, fragmentTag))
+    }
+
+    override fun startPreloadedFragment(fallbackFragment: Fragment?, fragmentTag: String): PreloadedFragmentResult {
+        val currentFragmentTag = getCurrentFragmentTag()
+        val result = fragmentManagerController.showPreloadedFragment(currentFragmentTag, fragmentTag, fallbackFragment)
+        if (result !is PreloadedFragmentResult.NotFound) {
+            fragmentStackState.notifyStackItemAddToCurrentTab(StackItem(fragmentTag = fragmentTag))
+        }
+        return result
     }
 
     override fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType?) {

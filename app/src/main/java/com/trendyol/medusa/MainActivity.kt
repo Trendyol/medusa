@@ -64,6 +64,11 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
 
         navigation = findViewById<View>(R.id.navigation) as BottomNavigationView
 
+        multipleStackNavigator.preloadFragment(
+            fragment = SamplePreloadFragment.newInstance(),
+            fragmentTag = SamplePreloadFragment.TAG
+        )
+
         multipleStackNavigator.initialize(savedInstanceState)
         val restartRootFragmentCheckBox = findViewById<View>(R.id.restartSwitch) as SwitchCompat
         findViewById<Button>(R.id.resetCurrentTab).setOnClickListener {
@@ -83,6 +88,9 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
         }
         findViewById<Button>(R.id.resetGroup).setOnClickListener {
             multipleStackNavigator.clearGroup("group1")
+        }
+        findViewById<Button>(R.id.startPreloadedFragment).setOnClickListener {
+            multipleStackNavigator.startPreloadedFragment(SamplePreloadFragment.newInstance(), SamplePreloadFragment.TAG)
         }
         multipleStackNavigator.observeDestinationChanges(this) {
             Log.d("Destination Changed", "${it.javaClass.name} - ${it.tag}")
