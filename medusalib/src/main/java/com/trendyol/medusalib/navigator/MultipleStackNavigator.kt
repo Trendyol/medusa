@@ -63,7 +63,7 @@ open class MultipleStackNavigator(
         fragmentManagerController.preloadFragment(FragmentData(fragment, fragmentTag))
     }
 
-    override fun startPreloadFragment(fallbackFragment: Fragment?, fragmentTag: String): PreloadedFragmentResult {
+    override fun startPreloadedFragment(fallbackFragment: Fragment?, fragmentTag: String): PreloadedFragmentResult {
         val currentFragmentTag = getCurrentFragmentTag()
         val result = fragmentManagerController.showPreloadedFragment(currentFragmentTag, fragmentTag, fallbackFragment)
         if (result !is PreloadedFragmentResult.NotFound) {

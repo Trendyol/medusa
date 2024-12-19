@@ -75,7 +75,7 @@ interface Navigator {
      *
      * This method attaches the given fragment to the fragment manager and prepares it in a hidden.
      * The fragment will not be visible to the user until it is started later using
-     * [startPreloadFragment].
+     * [startPreloadedFragment].
      *
      * @param fragment The fragment instance to preload.
      * @param fragmentTag The unique tag of fragment.
@@ -98,7 +98,7 @@ interface Navigator {
      * - [PreloadedFragmentResult.FallbackSuccess] if the fallback fragment was used instead.
      * - [PreloadedFragmentResult.NotFound] if no suitable fragment was found and no fallback was provided.
      */
-    fun startPreloadFragment(fallbackFragment: Fragment?, fragmentTag: String): PreloadedFragmentResult
+    fun startPreloadedFragment(fallbackFragment: Fragment?, fragmentTag: String): PreloadedFragmentResult
 
     /**
      * Modifies fragment stack. Pops current fragment from

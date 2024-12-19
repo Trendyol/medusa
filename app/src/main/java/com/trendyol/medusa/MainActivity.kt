@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
             multipleStackNavigator.clearGroup("group1")
         }
         findViewById<Button>(R.id.startPreloadedFragment).setOnClickListener {
-            multipleStackNavigator.startPreloadFragment(SamplePreloadFragment.newInstance(), SamplePreloadFragment.TAG)
+            multipleStackNavigator.startPreloadedFragment(SamplePreloadFragment.newInstance(), SamplePreloadFragment.TAG)
         }
         multipleStackNavigator.observeDestinationChanges(this) {
             Log.d("Destination Changed", "${it.javaClass.name} - ${it.tag}")

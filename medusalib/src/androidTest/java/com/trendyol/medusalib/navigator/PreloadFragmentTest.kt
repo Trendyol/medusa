@@ -46,7 +46,7 @@ class PreloadFragmentTest {
             navigator.preloadFragment(testChildFragment, fragmentTag)
             parentFragment.childFragmentManager.executePendingTransactions()
 
-            val result = navigator.startPreloadFragment(null, fragmentTag)
+            val result = navigator.startPreloadedFragment(null, fragmentTag)
             parentFragment.childFragmentManager.executePendingTransactions()
 
             Truth.assertThat(result).isEqualTo(PreloadedFragmentResult.Success)
@@ -68,7 +68,7 @@ class PreloadFragmentTest {
             val navigator = parentFragment.navigator
             val fallbackFragment = TestChildFragment.newInstance("Fallback Fragment")
 
-            val result = navigator.startPreloadFragment(fallbackFragment, fragmentTag)
+            val result = navigator.startPreloadedFragment(fallbackFragment, fragmentTag)
             parentFragment.childFragmentManager.executePendingTransactions()
 
             val startedFragment = parentFragment.childFragmentManager.findFragmentByTag(fragmentTag)
@@ -89,7 +89,7 @@ class PreloadFragmentTest {
             val fragmentTag = "non_existent_fragment"
             val navigator = parentFragment.navigator
 
-            val result = navigator.startPreloadFragment(null, fragmentTag)
+            val result = navigator.startPreloadedFragment(null, fragmentTag)
             parentFragment.childFragmentManager.executePendingTransactions()
 
             val fragment = parentFragment.childFragmentManager.findFragmentByTag(fragmentTag)
