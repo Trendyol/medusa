@@ -1,3 +1,5 @@
+
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Trendyol/medusa/badge)](https://scorecard.dev/viewer/?uri=github.com/Trendyol/medusa)
 <img src="https://raw.githubusercontent.com/Trendyol/medusa/master/art/medusaicon.png"/>
 
 Fragment manager for your Single Activity - Multi Fragment app. 
