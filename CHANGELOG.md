@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2025-29-09
+
+### Added
+- Add support to observe fragment transactions
+- Add functionality to get pending or current fragment
+
+### Changed
+- Bump Java compatibility from 17 to 21
+
+### Fixed
+- Fix a bug where a root fragment is not being displayed after we call resetCurrentTab by @MertNYuksel in #57
+
 ## [0.12.1] - 2024-10-02
 
 ### Fixed
