@@ -15,6 +15,7 @@ import com.trendyol.medusalib.navigator.data.StackItem
 import com.trendyol.medusalib.navigator.tag.TagCreator
 import com.trendyol.medusalib.navigator.tag.UniqueTagCreator
 import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
+import java.lang.ref.WeakReference
 
 open class MultipleStackNavigator(
     fragmentManager: FragmentManager,
@@ -259,13 +260,13 @@ open class MultipleStackNavigator(
 
     override fun observeFragmentTransaction(
         lifecycleOwner: LifecycleOwner,
-        transactionListener: (previousFragment: Fragment, nextFragment: Fragment) -> Unit
+        transactionListener: (previousFragment: Fragment?, nextFragment: Fragment?) -> Unit
     ) {
         requestedFragmentTransactionLiveData.observe(lifecycleOwner) { fragmentTransactionInfo ->
             if (fragmentTransactionInfo != null) {
                 transactionListener(
-                    fragmentTransactionInfo.currentFragment,
-                    fragmentTransactionInfo.nextFragment,
+                    fragmentTransactionInfo.currentFragment.get(),
+                    fragmentTransactionInfo.nextFragment.get(),
                 )
             }
         }
@@ -433,8 +434,8 @@ open class MultipleStackNavigator(
     private fun publishFragmentTransaction(nextFragment: Fragment) {
         val currentFragment = destinationChangeLiveData.value ?: return
         requestedFragmentTransactionLiveData.value = MedusaRequestedFragmentTransaction(
-            currentFragment = currentFragment,
-            nextFragment = nextFragment,
+            currentFragment = WeakReference(currentFragment),
+            nextFragment = WeakReference(nextFragment),
         )
     }
 
