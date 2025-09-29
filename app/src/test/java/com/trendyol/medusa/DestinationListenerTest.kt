@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.launchActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.trendyol.medusalib.navigator.MultipleStackNavigator
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -282,16 +281,20 @@ class DestinationListenerTest {
         }
     }
 
-    private fun MainActivity.doAndExecuteFragmentTransactions(run: MultipleStackNavigator.() -> Unit) =
-        run.invoke(this.multipleStackNavigator).also { supportFragmentManager.executePendingTransactions() }
-
-    private fun TestObserver<Fragment>.getLastFragmentName(indexFromLast: Int = 0) =
+    /**
+     * Gets the fragment name at a specific index from the last observed fragment.
+     * Useful for testing fragment navigation sequences.
+     *
+     * @param indexFromLast Index counting backwards from the last fragment (0 = last, 1 = second to last, etc.)
+     */
+    private fun TestObserver<Fragment>.getLastFragmentName(indexFromLast: Int = 0): String =
         values[values.lastIndex - indexFromLast].getFragmentName()
 
-    private fun TestObserver<Fragment>.getFragmentName(index: Int) =
+    /**
+     * Gets the fragment name at a specific absolute index.
+     *
+     * @param index The absolute index in the observed values list
+     */
+    private fun TestObserver<Fragment>.getFragmentName(index: Int): String =
         values[index].getFragmentName()
-
-    private fun Fragment.getFragmentName() =
-        SampleFragment.from(this as SampleFragment)
 }
-
