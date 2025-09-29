@@ -25,7 +25,7 @@ class FragmentTransactionObserverTest {
 
     @Test
     fun `given activity is resumed, when observeFragmentTransaction is called and fragment is started, should notify observer`() {
-        val testObserver = TestObserver<Pair<Fragment, Fragment>>()
+        val testObserver = TestObserver<Pair<Fragment?, Fragment?>>()
         launchActivity<MainActivity>().use { scenario ->
             // given
             scenario.moveToState(Lifecycle.State.RESUMED)
@@ -51,7 +51,7 @@ class FragmentTransactionObserverTest {
 
     @Test
     fun `given fragments in stack, when switchTab is called, should notify observer if current fragment exists`() {
-        val testObserver = TestObserver<Pair<Fragment, Fragment>>()
+        val testObserver = TestObserver<Pair<Fragment?, Fragment?>>()
         launchActivity<MainActivity>().use { scenario ->
             // given
             scenario.moveToState(Lifecycle.State.RESUMED)
@@ -75,7 +75,7 @@ class FragmentTransactionObserverTest {
 
     @Test
     fun `given fragment is started and then go back, should notify observer with correct sequence`() {
-        val testObserver = TestObserver<Pair<Fragment, Fragment>>()
+        val testObserver = TestObserver<Pair<Fragment?, Fragment?>>()
         launchActivity<MainActivity>().use { scenario ->
             // given
             scenario.moveToState(Lifecycle.State.RESUMED)
@@ -111,7 +111,7 @@ class FragmentTransactionObserverTest {
 
     @Test
     fun `given multiple fragment operations, should handle observer notifications`() {
-        val testObserver = TestObserver<Pair<Fragment, Fragment>>()
+        val testObserver = TestObserver<Pair<Fragment?, Fragment?>>()
         launchActivity<MainActivity>().use { scenario ->
             // given
             scenario.moveToState(Lifecycle.State.RESUMED)
@@ -165,10 +165,13 @@ class FragmentTransactionObserverTest {
         }
     }
 
-    private fun TestObserver<Pair<Fragment, Fragment>>.getTransactionFragmentNames(
+    private fun TestObserver<Pair<Fragment?, Fragment?>>.getTransactionFragmentNames(
         index: Int,
     ): Pair<String, String> {
         val transaction = values[index]
-        return Pair(transaction.first.getFragmentName(), transaction.second.getFragmentName())
+        return Pair(
+            transaction.first?.getFragmentName().orEmpty(),
+            transaction.second?.getFragmentName().orEmpty(),
+        )
     }
 }

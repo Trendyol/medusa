@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
         multipleStackNavigator.observeFragmentTransaction(this) { previous, next ->
             Log.d(
                 "FragmentTransaction",
-                "Starting transaction: Previous = ${previous.javaClass.name}, Next = ${next.javaClass.name}"
+                "Starting transaction: Previous = ${previous?.javaClass?.name}, Next = ${next?.javaClass?.name}"
             )
         }
     }
