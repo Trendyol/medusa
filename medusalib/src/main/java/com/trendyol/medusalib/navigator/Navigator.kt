@@ -213,6 +213,30 @@ interface Navigator {
     )
 
     /**
+     * Observes fragment transaction events within the Navigator and notifies the given listener
+     * whenever a transaction occurs that changes the currently displayed fragment.
+     *
+     * Implementations must ensure the following:
+     *
+     * - The [transactionListener] will only be triggered when both the current and the next
+     *   [Fragment] instances are at least in the [androidx.lifecycle.Lifecycle.State.STARTED] state.
+     *
+     * - The listener will automatically be removed when the given [lifecycleOwner] reaches the
+     *   [androidx.lifecycle.Lifecycle.State.DESTROYED] state, preventing memory leaks.
+     *
+     * This is useful for observing navigation transitions and reacting to them, such as for
+     * analytics, UI updates, or custom navigation handling.
+     *
+     * @param lifecycleOwner The [LifecycleOwner] whose lifecycle will control the observer.
+     * @param transactionListener A callback invoked with the current fragment (being replaced)
+     * and the next fragment (being displayed) whenever a fragment transaction occurs.
+     */
+    fun observeFragmentTransaction(
+        lifecycleOwner: LifecycleOwner,
+        transactionListener: (currentFragment: Fragment, nextFragment: Fragment) -> Unit,
+    )
+
+    /**
      * Retrieves the index of a [Fragment] within the fragment stack based on the specified tag.
      * If the tag is null or empty, returns -1.
      * Iterates through the fragment stack to find the specified tag.

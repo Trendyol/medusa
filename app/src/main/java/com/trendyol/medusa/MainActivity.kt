@@ -95,6 +95,12 @@ class MainActivity : AppCompatActivity(), Navigator.NavigatorListener {
         multipleStackNavigator.observeDestinationChanges(this) {
             Log.d("Destination Changed", "${it.javaClass.name} - ${it.tag}")
         }
+        multipleStackNavigator.observeFragmentTransaction(this) { previous, next ->
+            Log.d(
+                "FragmentTransaction",
+                "Starting transaction: Previous = ${previous.javaClass.name}, Next = ${next.javaClass.name}"
+            )
+        }
     }
 
     override fun onBackPressed() {

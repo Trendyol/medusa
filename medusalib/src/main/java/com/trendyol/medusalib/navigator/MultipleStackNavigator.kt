@@ -10,6 +10,7 @@ import com.trendyol.medusalib.navigator.controller.FragmentManagerController
 import com.trendyol.medusalib.navigator.controller.PreloadedFragmentResult
 import com.trendyol.medusalib.navigator.controller.StagedFragmentHolder
 import com.trendyol.medusalib.navigator.data.FragmentData
+import com.trendyol.medusalib.navigator.data.MedusaRequestedFragmentTransaction
 import com.trendyol.medusalib.navigator.data.StackItem
 import com.trendyol.medusalib.navigator.tag.TagCreator
 import com.trendyol.medusalib.navigator.tag.UniqueTagCreator
@@ -25,6 +26,7 @@ open class MultipleStackNavigator(
 ) : Navigator {
 
     private var destinationChangeLiveData = MutableLiveData<Fragment?>()
+    private var requestedFragmentTransactionLiveData = MutableLiveData<MedusaRequestedFragmentTransaction?>()
     private val tagCreator: TagCreator = UniqueTagCreator()
 
     private val fragmentManagerController = FragmentManagerController(
@@ -73,7 +75,7 @@ open class MultipleStackNavigator(
     }
 
     override fun start(fragment: Fragment, fragmentGroupName: String, transitionAnimation: TransitionAnimationType?) {
-
+        publishFragmentTransaction(nextFragment = fragment)
         val createdTag = tagCreator.create(fragment)
         val currentTabIndex = fragmentStackState.getSelectedTabIndex()
         val fragmentData = FragmentData(fragment, createdTag, transitionAnimation)
@@ -167,6 +169,7 @@ open class MultipleStackNavigator(
                 currentTabIndex,
                 StackItem(fragmentTag = createdTag),
             )
+            publishFragmentTransaction(nextFragment = rootFragment)
             fragmentManagerController.addFragment(rootFragmentData)
 
             rootFragment.observeFragmentLifecycle(
@@ -184,6 +187,7 @@ open class MultipleStackNavigator(
                 onViewCreated = ::onFragmentViewCreated,
                 onFragmentDestroy = ::onFragmentDestroy
             )
+            publishFragmentTransaction(nextFragment = newDestination)
             fragmentManagerController.enableFragment(newDestinationTag)
         }
     }
@@ -228,6 +232,11 @@ open class MultipleStackNavigator(
         return fragmentManagerController.getFragment(visibleFragmentTag)
     }
 
+    override fun getPendingOrCurrentFragment(): Fragment? {
+        val visibleFragmentTag = getCurrentFragmentTag()
+        return fragmentManagerController.getCurrentOrStagedFragment(visibleFragmentTag)
+    }
+
     override fun initialize(savedState: Bundle?) {
         if (savedState == null) {
             initializeStackState()
@@ -244,6 +253,20 @@ open class MultipleStackNavigator(
         destinationChangeLiveData.observe(lifecycleOwner) { fragment ->
             if (fragment != null) {
                 destinationChangedListener(fragment)
+            }
+        }
+    }
+
+    override fun observeFragmentTransaction(
+        lifecycleOwner: LifecycleOwner,
+        transactionListener: (previousFragment: Fragment, nextFragment: Fragment) -> Unit
+    ) {
+        requestedFragmentTransactionLiveData.observe(lifecycleOwner) { fragmentTransactionInfo ->
+            if (fragmentTransactionInfo != null) {
+                transactionListener(
+                    fragmentTransactionInfo.currentFragment,
+                    fragmentTransactionInfo.nextFragment,
+                )
             }
         }
     }
@@ -281,6 +304,7 @@ open class MultipleStackNavigator(
             ::onFragmentViewCreated,
             ::onFragmentDestroy
         )
+        publishFragmentTransaction(nextFragment = rootFragment)
     }
 
     private fun loadStackStateFromSavedState(savedState: Bundle) {
@@ -309,12 +333,14 @@ open class MultipleStackNavigator(
                 fragmentStackState.getSelectedTabIndex(),
                 StackItem(createdTag),
             )
+            publishFragmentTransaction(nextFragment = rootFragment)
             fragmentManagerController.addFragment(rootFragmentData)
             rootFragment.observeFragmentLifecycle(
                 onViewCreated = ::onFragmentViewCreated,
                 onFragmentDestroy = ::onFragmentDestroy
             )
         } else {
+            publishFragmentTransaction(nextFragment = upperFragment)
             fragmentManagerController.enableFragment(upperFragmentTag)
             upperFragment.observeFragmentLifecycle(
                 onViewCreated = ::onFragmentViewCreated,
@@ -400,9 +426,16 @@ open class MultipleStackNavigator(
         })
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBundle(MEDUSA_STACK_STATE_KEY, fragmentStackStateMapper.toBundle(fragmentStackState))
+    }
+
+    private fun publishFragmentTransaction(nextFragment: Fragment) {
+        val currentFragment = destinationChangeLiveData.value ?: return
+        requestedFragmentTransactionLiveData.value = MedusaRequestedFragmentTransaction(
+            currentFragment = currentFragment,
+            nextFragment = nextFragment,
+        )
     }
 
     companion object {
