@@ -176,6 +176,11 @@ interface Navigator {
     fun getCurrentFragment(): Fragment?
 
     /**
+     * @return pending or current visible fragment
+     */
+    fun getPendingOrCurrentFragment(): Fragment?
+
+    /**
      * Puts current fragment stack state to given bundle inorder to retain
      * state across activity recreation and process death.
      * @param outState outState parameter of onSaveInstanceState method in

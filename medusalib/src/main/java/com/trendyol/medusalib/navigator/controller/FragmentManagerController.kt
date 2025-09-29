@@ -137,7 +137,7 @@ internal class FragmentManagerController(
     }
 
     private fun getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag: String): Fragment? {
-        var fragment = getFragment(fragmentTag) ?: stagedFragmentHolder.getStagedFragment(fragmentTag)
+        var fragment = getCurrentOrStagedFragment(fragmentTag)
         if (fragment == null && fragmentManager.executePendingTransactions()) {
             fragment = getFragment(fragmentTag)
         }
@@ -146,6 +146,10 @@ internal class FragmentManagerController(
 
     fun getFragment(fragmentTag: String): Fragment? {
         return fragmentManager.findFragmentByTag(fragmentTag)
+    }
+
+    fun getCurrentOrStagedFragment(fragmentTag: String): Fragment? {
+        return fragmentManager.findFragmentByTag(fragmentTag) ?: stagedFragmentHolder.getStagedFragment(fragmentTag)
     }
 
     private fun getFragmentNavigatorTransaction(fragmentTag: String): NavigatorTransaction {
