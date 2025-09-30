@@ -269,6 +269,7 @@ open class MultipleStackNavigator(
                     fragmentTransactionInfo.nextFragment.get(),
                 )
             }
+            requestedFragmentTransactionLiveData.value = null
         }
     }
 
