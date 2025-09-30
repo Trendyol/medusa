@@ -16,9 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Bump Java compatibility from 17 to 21
 
-### Fixed
-- Fix a bug where a root fragment is not being displayed after we call resetCurrentTab by @MertNYuksel in #57
-
 ## [0.12.1] - 2024-10-02
 
 ### Fixed
