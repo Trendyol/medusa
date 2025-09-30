@@ -269,7 +269,6 @@ open class MultipleStackNavigator(
                     fragmentTransactionInfo.nextFragment.get(),
                 )
             }
-            requestedFragmentTransactionLiveData.value = null
         }
     }
 
@@ -438,6 +437,7 @@ open class MultipleStackNavigator(
             currentFragment = WeakReference(currentFragment),
             nextFragment = WeakReference(nextFragment),
         )
+        requestedFragmentTransactionLiveData.postValue(null)
     }
 
     companion object {
