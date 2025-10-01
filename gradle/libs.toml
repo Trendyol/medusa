@@ -1,3 +1,7 @@
+[versions]
+agp = "8.10.1"
+kotlin = "2.1.20"
+
 [libraries]
 androidGradlePlugin = "com.android.tools.build:gradle:8.5.0"
 androidXAppCompat = "androidx.appcompat:appcompat:1.1.0"
@@ -19,5 +23,9 @@ robolectric = "org.robolectric:robolectric:4.12.2"
 truth = "com.google.truth:truth:1.4.2"
 espressoTest = "androidx.test.espresso:espresso-core:3.6.0"
 
-[versions]
-kotlin = "2.0.0"
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+maven-publish = { id = "com.vanniktech.maven.publish", version = "0.33.0"}
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
