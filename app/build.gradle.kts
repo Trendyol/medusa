@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.medusalib)
+    implementation(projects.medusa)
     implementation(libs.androidXAppCompat)
     implementation(libs.androidXConstraintLayout)
     implementation(libs.androidXVectorDrawable)

@@ -1,4 +1,4 @@
-rootProject.name = "Medusa"
+rootProject.name = "medusa-root"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -30,5 +30,5 @@ dependencyResolutionManagement {
     }
 }
 
-include(":medusalib")
+include(":medusa")
 include(":app")
