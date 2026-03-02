@@ -5,6 +5,7 @@ Fragment manager for your Single Activity - Multi Fragment app.
 [![](https://img.shields.io/nexus/r/com.trendyol/medusa?server=https%3A%2F%2Foss.sonatype.org%2F)](https://oss.sonatype.org/#nexus-search;gav~com.trendyol~medusa~~~~kw,versionexpand)
 [![](https://img.shields.io/github/actions/workflow/status/Trendyol/medusa/pull-request.yml?branch=master)](https://github.com/Trendyol/medusa/actions/workflows/pull-request.yml?query=branch%3Amaster)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![libs.tech recommends](https://libs.tech/project/156667108/badge.svg)](https://libs.tech/project/156667108/medusa)
 
 Medusa is smart enough to handle fragment attachment/detachment or hiding/showing fragment.  No more memory handling. No more fragment stack logic.
 
