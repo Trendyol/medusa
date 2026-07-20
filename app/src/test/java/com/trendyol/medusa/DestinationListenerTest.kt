@@ -281,6 +281,48 @@ class DestinationListenerTest {
         }
     }
 
+    @Test
+    fun `given fragments from multiple groups, when clearGroups is called, then matching groups are removed atomically`() {
+        val testObserver = TestObserver<Fragment>()
+        launchActivity<MainActivity>().use { scenario ->
+            scenario.moveToState(Lifecycle.State.RESUMED)
+            scenario.onActivity { activity ->
+                activity.multipleStackNavigator.observeDestinationChanges(activity, testObserver)
+                activity.doAndExecuteFragmentTransactions {
+                    start(FragmentGenerator.generateNewFragment())
+                    start(FragmentGenerator.generateNewFragment(), "group-1")
+                    start(FragmentGenerator.generateNewFragment(), "group-2")
+                    start(FragmentGenerator.generateNewFragment(), "group-1")
+                    start(FragmentGenerator.generateNewFragment(), "group-3")
+                }
+                activity.doAndExecuteFragmentTransactions {
+                    clearGroups("group-1", "group-3")
+                }
+
+                Assert.assertEquals(
+                    "fragment 6",
+                    testObserver.getLastFragmentName(indexFromLast = 1)
+                )
+                Assert.assertEquals(
+                    "fragment 4",
+                    testObserver.getLastFragmentName(indexFromLast = 0)
+                )
+            }
+        }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `given default group, when clearGroups is called, then exception is thrown`() {
+        launchActivity<MainActivity>().use { scenario ->
+            scenario.moveToState(Lifecycle.State.RESUMED)
+            scenario.onActivity { activity ->
+                activity.doAndExecuteFragmentTransactions {
+                    clearGroups("group-name", "")
+                }
+            }
+        }
+    }
+
     /**
      * Gets the fragment name at a specific index from the last observed fragment.
      * Useful for testing fragment navigation sequences.

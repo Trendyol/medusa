@@ -206,13 +206,17 @@ open class MultipleStackNavigator(
     }
 
     override fun clearGroup(fragmentGroupName: String) {
-        if (fragmentGroupName == DEFAULT_GROUP_NAME) {
+        clearGroups(fragmentGroupName)
+    }
+
+    override fun clearGroups(vararg fragmentGroupNames: String) {
+        if (fragmentGroupNames.any { it == DEFAULT_GROUP_NAME }) {
             throw IllegalArgumentException("Fragment group name can not be empty.")
         }
         val upperFragmentTag = fragmentStackState.peekItemFromSelectedTab()?.fragmentTag
 
         val poppedFragmentTags = fragmentStackState
-            .popItems(fragmentGroupName)
+            .popItems(fragmentGroupNames.toSet())
             .map { it.fragmentTag }
 
         if (poppedFragmentTags.isNotEmpty()) {
