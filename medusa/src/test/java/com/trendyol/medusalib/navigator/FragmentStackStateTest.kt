@@ -28,4 +28,30 @@ class FragmentStackStateTest {
 
         Truth.assertThat(stackState.fragmentTagStack).containsExactlyElementsIn(emptyStack)
     }
+
+    @Test
+    fun `popItems removes all items matching given group names from selected tab`() {
+        val stackState = buildFragmentStackState(
+            buildTabStack(0),
+            buildStack(
+                StackItem("ROOT"),
+                StackItem("TAG1", "GROUP_1"),
+                StackItem("TAG2", "GROUP_2"),
+                StackItem("TAG3", "GROUP_1"),
+                StackItem("TAG4", "GROUP_3"),
+            ),
+        )
+
+        val actualPoppedItems = stackState.popItems(setOf("GROUP_1", "GROUP_3"))
+
+        Truth.assertThat(actualPoppedItems).containsExactly(
+            StackItem("TAG1", "GROUP_1"),
+            StackItem("TAG3", "GROUP_1"),
+            StackItem("TAG4", "GROUP_3"),
+        ).inOrder()
+        Truth.assertThat(stackState.fragmentTagStack[0]).containsExactly(
+            StackItem("ROOT"),
+            StackItem("TAG2", "GROUP_2"),
+        ).inOrder()
+    }
 }

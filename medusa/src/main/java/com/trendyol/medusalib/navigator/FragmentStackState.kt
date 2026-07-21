@@ -73,6 +73,10 @@ data class FragmentStackState constructor(
     }
 
     fun popItems(groupName: String): List<StackItem> {
+        return popItems(setOf(groupName))
+    }
+
+    fun popItems(groupNames: Set<String>): List<StackItem> {
         val currentTabIndex = getSelectedTabIndex()
         val currentTabStack = fragmentTagStack.get(getSelectedTabIndex())
 
@@ -83,7 +87,7 @@ data class FragmentStackState constructor(
 
         for (i in 1 until currentTabStack.size) {
             val stackItem = currentTabStack[i]
-            if (groupName == stackItem.groupName) {
+            if (groupNames.contains(stackItem.groupName)) {
                 deletedStackItems.add(stackItem)
             } else {
                 updatedTabStack.push(stackItem)

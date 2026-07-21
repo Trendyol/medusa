@@ -164,6 +164,13 @@ interface Navigator {
     fun clearGroup(fragmentGroupName: String)
 
     /**
+     * Clears all fragments with any of the given group names in the
+     * current tab in a single transaction. This method aims to clear all
+     * related/steps fragments from tab atomically.
+     */
+    fun clearGroups(vararg fragmentGroupNames: String)
+
+    /**
      * Checks if stack has only root
      * @param tabIndex
      * @return true if only root fragment exists in the stack
