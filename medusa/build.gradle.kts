@@ -35,7 +35,7 @@ android {
 }
 
 group = "com.trendyol"
-version = "0.14.0"
+version = "0.14.1"
 
 mavenPublishing {
     publishToMavenCentral(automaticRelease = false)
