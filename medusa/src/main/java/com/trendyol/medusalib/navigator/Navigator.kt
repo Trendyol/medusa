@@ -298,4 +298,17 @@ interface Navigator {
          */
         fun getNavigatorTransaction(): NavigatorTransaction
     }
+
+    /**
+     * When implemented by a fragment being started, Medusa can leave the previous
+     * fragment attached/shown so an overlay transition can run over it.
+     */
+    interface KeepPreviousFragmentVisible {
+        fun keepPreviousFragmentVisible(): Boolean
+    }
+
+    /** Pauses UI work while a fragment's view is retained behind the current destination. */
+    interface OnRetainedAsBackgroundListener {
+        fun onRetainedAsBackground(retained: Boolean)
+    }
 }
