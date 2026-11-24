@@ -41,16 +41,7 @@ internal class FragmentManagerController(
     fun enableFragment(fragmentTag: String) {
         val navigatorTransaction = getFragmentNavigatorTransaction(fragmentTag)
         checkAndCreateTransaction()
-        retainedSources[fragmentTag]?.let { sourceTag ->
-            currentTransaction?.show(getFragment(sourceTag))
-        }
-        getFragment(fragmentTag)?.let { fragment ->
-            (fragment as? Navigator.OnRetainedAsBackgroundListener)?.onRetainedAsBackground(false)
-            currentTransaction?.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
-        }
-        if (retainedViewLayouts.containsKey(fragmentTag)) {
-            currentTransaction?.runOnCommit { restoreRetainedViewLayout(fragmentTag) }
-        }
+        restoreRetainedFragmentState(fragmentTag)
 
         when (navigatorTransaction.transactionType) {
             TransactionType.SHOW_HIDE -> commitShow(fragmentTag)
@@ -178,6 +169,19 @@ internal class FragmentManagerController(
         }
 
         commitAllowingStateLoss()
+    }
+
+    private fun restoreRetainedFragmentState(fragmentTag: String) {
+        retainedSources[fragmentTag]?.let { sourceTag ->
+            currentTransaction?.show(getFragment(sourceTag))
+        }
+        getFragment(fragmentTag)?.let { fragment ->
+            (fragment as? Navigator.OnRetainedAsBackgroundListener)?.onRetainedAsBackground(false)
+            currentTransaction?.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
+        }
+        if (retainedViewLayouts.containsKey(fragmentTag)) {
+            currentTransaction?.runOnCommit { restoreRetainedViewLayout(fragmentTag) }
+        }
     }
 
     private fun retainViewLayout(fragmentTag: String, fragment: Fragment) {
