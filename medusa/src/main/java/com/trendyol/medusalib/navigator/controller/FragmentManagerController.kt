@@ -1,12 +1,13 @@
 package com.trendyol.medusalib.navigator.controller
 
+import android.view.View
 import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
 import com.trendyol.medusalib.R
-import com.trendyol.medusalib.common.extensions.attach
 import com.trendyol.medusalib.common.extensions.detach
 import com.trendyol.medusalib.common.extensions.hide
 import com.trendyol.medusalib.common.extensions.remove
@@ -16,6 +17,12 @@ import com.trendyol.medusalib.navigator.data.FragmentData
 import com.trendyol.medusalib.navigator.transaction.NavigatorTransaction
 import com.trendyol.medusalib.navigator.transaction.TransactionType
 import com.trendyol.medusalib.navigator.transitionanimation.TransitionAnimationType
+import java.lang.ref.WeakReference
+
+private data class RetainedViewLayout(
+    val view: WeakReference<View>,
+    val height: Int,
+)
 
 internal class FragmentManagerController(
     private val fragmentManager: FragmentManager,
@@ -28,8 +35,13 @@ internal class FragmentManagerController(
 
     private var currentTransitionAnimationType: TransitionAnimationType? = null
 
+    private val retainedViewLayouts = mutableMapOf<String, RetainedViewLayout>()
+    private val retainedSources = mutableMapOf<String, String>()
+
     fun enableFragment(fragmentTag: String) {
         val navigatorTransaction = getFragmentNavigatorTransaction(fragmentTag)
+        checkAndCreateTransaction()
+        restoreRetainedFragmentState(fragmentTag)
 
         when (navigatorTransaction.transactionType) {
             TransactionType.SHOW_HIDE -> commitShow(fragmentTag)
@@ -38,6 +50,8 @@ internal class FragmentManagerController(
     }
 
     fun disableFragment(fragmentTag: String) {
+        releaseRetainedSource(fragmentTag)
+        restoreRetainedViewLayout(fragmentTag)
         val navigatorTransaction = getFragmentNavigatorTransaction(fragmentTag)
 
         when (navigatorTransaction.transactionType) {
@@ -47,6 +61,9 @@ internal class FragmentManagerController(
     }
 
     fun removeFragment(fragmentTag: String) {
+        retainedSources.remove(fragmentTag)
+        retainedSources.entries.removeAll { it.value == fragmentTag }
+        restoreRetainedViewLayout(fragmentTag)
         checkAndCreateTransaction()
 
         when (currentTransitionAnimationType) {
@@ -66,6 +83,9 @@ internal class FragmentManagerController(
         checkAndCreateTransaction()
 
         for (fragmentTag in fragmentTagList) {
+            releaseRetainedSource(fragmentTag)
+            retainedSources.entries.removeAll { it.value == fragmentTag }
+            restoreRetainedViewLayout(fragmentTag)
             getFragment(fragmentTag)?.let { currentTransaction?.remove(it) }
         }
         commitAllowingStateLoss()
@@ -123,13 +143,73 @@ internal class FragmentManagerController(
             currentTransaction?.add(containerId, fragmentData.fragment, fragmentData.fragmentTag)
         }
 
-        val disabledFragmentNavigatorTransaction = getFragmentNavigatorTransaction(disableFragmentTag)
-        when (disabledFragmentNavigatorTransaction.transactionType) {
-            TransactionType.SHOW_HIDE -> currentTransaction?.hide(disabledFragment)
-            TransactionType.ATTACH_DETACH -> currentTransaction?.detach(disabledFragment)
+        val transitionOwner = fragmentDataArgs.firstOrNull { fragmentData ->
+            val fragment = fragmentData.fragment
+            fragment is Navigator.KeepPreviousFragmentVisible && fragment.keepPreviousFragmentVisible()
+        }
+        if (transitionOwner != null) {
+            releaseRetainedSource(disableFragmentTag)
+            disabledFragment?.let { fragment ->
+                retainedSources[transitionOwner.fragmentTag] = disableFragmentTag
+                retainViewLayout(disableFragmentTag, fragment)
+                (fragment as? Navigator.OnRetainedAsBackgroundListener)?.onRetainedAsBackground(true)
+                currentTransaction?.setMaxLifecycle(fragment, Lifecycle.State.STARTED)
+            }
+        } else {
+            restoreRetainedViewLayout(disableFragmentTag)
+            val disabledFragmentNavigatorTransaction = getFragmentNavigatorTransaction(disableFragmentTag)
+            when (disabledFragmentNavigatorTransaction.transactionType) {
+                TransactionType.SHOW_HIDE -> currentTransaction?.hide(disabledFragment)
+                TransactionType.ATTACH_DETACH -> currentTransaction?.detach(disabledFragment)
+            }
+            retainedSources[disableFragmentTag]?.let { sourceTag ->
+                setCustomAnimations(0, 0)
+                currentTransaction?.hide(getFragment(sourceTag))
+            }
         }
 
         commitAllowingStateLoss()
+    }
+
+    private fun restoreRetainedFragmentState(fragmentTag: String) {
+        retainedSources[fragmentTag]?.let { sourceTag ->
+            currentTransaction?.show(getFragment(sourceTag))
+        }
+        getFragment(fragmentTag)?.let { fragment ->
+            (fragment as? Navigator.OnRetainedAsBackgroundListener)?.onRetainedAsBackground(false)
+            currentTransaction?.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
+        }
+        if (retainedViewLayouts.containsKey(fragmentTag)) {
+            currentTransaction?.runOnCommit { restoreRetainedViewLayout(fragmentTag) }
+        }
+    }
+
+    private fun retainViewLayout(fragmentTag: String, fragment: Fragment) {
+        if (retainedViewLayouts.containsKey(fragmentTag)) return
+        val view = fragment.view?.takeIf { it.height > 0 } ?: return
+        if (view.layoutParams.height == view.height) return
+        retainedViewLayouts[fragmentTag] = RetainedViewLayout(WeakReference(view), view.layoutParams.height)
+        view.layoutParams = view.layoutParams.apply { height = view.height }
+    }
+
+    private fun releaseRetainedSource(ownerTag: String) {
+        val sourceTag = retainedSources.remove(ownerTag) ?: return
+        releaseRetainedSource(sourceTag)
+        restoreRetainedViewLayout(sourceTag)
+        checkAndCreateTransaction()
+        when (getFragmentNavigatorTransaction(sourceTag).transactionType) {
+            TransactionType.SHOW_HIDE -> currentTransaction?.hide(getFragment(sourceTag))
+            TransactionType.ATTACH_DETACH -> currentTransaction?.detach(getFragment(sourceTag))
+        }
+    }
+
+    private fun restoreRetainedViewLayout(fragmentTag: String) {
+        val retained = retainedViewLayouts.remove(fragmentTag) ?: return
+        retained.view.get()?.let { view ->
+            if (view.layoutParams.height != retained.height) {
+                view.layoutParams = view.layoutParams.apply { height = retained.height }
+            }
+        }
     }
 
     private fun setCustomAnimations(@AnimatorRes @AnimRes enter: Int, @AnimatorRes @AnimRes exit: Int) {
@@ -165,6 +245,9 @@ internal class FragmentManagerController(
     }
 
     fun findFragmentByTagAndRemove(fragmentTag: String) {
+        releaseRetainedSource(fragmentTag)
+        retainedSources.entries.removeAll { it.value == fragmentTag }
+        restoreRetainedViewLayout(fragmentTag)
         checkAndCreateTransaction()
 
         getFragmentWithExecutingPendingTransactionsIfNeeded(fragmentTag)?.let { currentTransaction?.remove(it) }
@@ -180,7 +263,10 @@ internal class FragmentManagerController(
     private fun commitAttach(fragmentTag: String) {
         checkAndCreateTransaction()
 
-        currentTransaction?.attach(getFragment(fragmentTag))
+        getFragment(fragmentTag)?.let { fragment ->
+            currentTransaction?.attach(fragment)
+            if (fragment.isHidden) currentTransaction?.show(fragment)
+        }
         commitAllowingStateLoss()
     }
 

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.1] - 2026-11-23
+
+### Added
+- Add opt-in retention of background fragments during overlay transitions, with a callback for retained fragment UI work.
+
+### Fixed
+- Pin the Gradle build JVM to JDK 21 to prevent CodeQL autobuild failures with Java 25.
+
 ## [0.13.0] - 2025-29-09
 
 ### Added
